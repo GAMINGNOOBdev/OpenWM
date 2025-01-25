@@ -1,7 +1,7 @@
 #ifndef __FROSTEDWM__KEY_H_
 #define __FROSTEDWM__KEY_H_ 1
 
-#include "types.h"
+#include <stdint.h>
 
 typedef uint8_t key_state_t;
 typedef uint16_t key_t;
