@@ -15,3 +15,8 @@ frostedwm_context frostedwm_create_context(void* framebuffer0, void* framebuffer
     };
     return ctx;
 }
+
+int _start(){
+
+    return 0;
+}

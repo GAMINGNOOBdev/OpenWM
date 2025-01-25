@@ -3,11 +3,11 @@ SRC_DIR := src
 INC_DIR := inc
 OBJ_DIR := obj
 
-TARGET := $(BIN_DIR)/libFrostedWM.so
+TARGET := $(BIN_DIR)/libFrostedWM.bin
 
-CFLAGS := -I$(INC_DIR) -Wall
+CFLAGS := -I$(INC_DIR)
 ASFLAGS :=
-LDFLAGS := -shared
+LDFLAGS := -L ./linker.ld
 
 CFILES := $(shell find -L src -type f -name '*.c')
 ASFILES := $(shell find -L src -type f -name '*.S')
@@ -29,7 +29,7 @@ $(OBJ_DIR)/%.o: $(SRC_DIR)/%.c
 $(TARGET): $(objects)
 	@mkdir -p $(@D)
 	@echo "Generating '$@'..."
-	@$(CC) $(CFLAGS) $(LDFLAGS) -o $@ $(objects)
+	@$(LD) $(CFLAGS) $(LDFLAGS) -o $@ $(objects)
 
 .PHONY: clean
 clean:
