@@ -3,16 +3,23 @@ SRC_DIR := src
 INC_DIR := inc
 OBJ_DIR := obj
 
-TARGET := $(BIN_DIR)/libOpenWM.so
+TARGET := $(BIN_DIR)/libFrostedWM.so
 
 CFLAGS := -I$(INC_DIR) -Wall
 ASFLAGS :=
 LDFLAGS := -shared
 
-objects = obj/context.o
+CFILES := $(shell find -L src -type f -name '*.c')
+ASFILES := $(shell find -L src -type f -name '*.S')
+NASMFILES := $(shell find -L src -type f -name '*.asm')
+
+CFILES := $(subst src/,,$(CFILES))
+ASFILES := $(subst src/,,$(ASFILES))
+NASMFILES := $(subst src/,,$(NASMFILES))
+
+objects = $(addprefix obj/,$(CFILES:.c=.o) $(ASFILES:.S=.o) $(NASMFILES:.asm=.o))
 
 all: $(objects) $(TARGET)
-
 
 $(OBJ_DIR)/%.o: $(SRC_DIR)/%.c
 	@mkdir -p $(@D)
