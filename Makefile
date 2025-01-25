@@ -7,7 +7,7 @@ TARGET := $(BIN_DIR)/libFrostedWM.bin
 
 CFLAGS := -I$(INC_DIR)
 ASFLAGS :=
-LDFLAGS := -L ./linker.ld
+LDFLAGS := -T ./linker.ld
 
 CFILES := $(shell find -L src -type f -name '*.c')
 ASFILES := $(shell find -L src -type f -name '*.S')
