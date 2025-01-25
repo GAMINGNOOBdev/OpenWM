@@ -5,9 +5,18 @@ OBJ_DIR := obj
 
 TARGET := $(BIN_DIR)/libFrostedWM.bin
 
-CFLAGS := -I$(INC_DIR)
+CFLAGS := \
+	-I$(INC_DIR)
+
 ASFLAGS :=
-LDFLAGS := -T ./linker.ld
+LDFLAGS := \
+    -nostdlib \
+    -static \
+    -pie \
+    --no-dynamic-linker \
+    -z text \
+    -z max-page-size=0x1000 \
+    -T ./linker.ld
 
 CFILES := $(shell find -L src -type f -name '*.c')
 ASFILES := $(shell find -L src -type f -name '*.S')
