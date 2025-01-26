@@ -1,5 +1,5 @@
-#ifndef __FROSTEDWM__MOUSE_H_
-#define __FROSTEDWM__MOUSE_H_ 1
+#ifndef __FROSTEDWM__INPUT__MOUSE_H_
+#define __FROSTEDWM__INPUT__MOUSE_H_ 1
 
 #include <stdint.h>
 #include "../types.h"
@@ -24,6 +24,11 @@ typedef uint8_t mouse_button_t;
 #define MOUSE_BUTTON_SIX            (6)
 #define MOUSE_BUTTON_SEVEN          (7)
 #define MOUSE_BUTTON_EIGHT          (8)
+
+#define MOUSE_SCROLL_UP             (0)
+#define MOUSE_SCROLL_DOWN           (1)
+#define MOUSE_SCROLL_LEFT           (2)
+#define MOUSE_SCROLL_RIGHT          (3)
 
 /**
  * Get the current mouse position

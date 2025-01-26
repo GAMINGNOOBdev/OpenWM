@@ -25,6 +25,11 @@ SECTIONS {
     }
 
     /* Section for storing relocation information */
+    .reloc : {
+        *(.reloc)
+    }
+
+    /* Section for storing relocation information */
     .rela.text : {
         *(.rela.text)
     }

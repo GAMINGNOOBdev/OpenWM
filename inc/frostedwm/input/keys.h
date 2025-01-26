@@ -1,5 +1,5 @@
-#ifndef __FROSTEDWM__KEY_H_
-#define __FROSTEDWM__KEY_H_ 1
+#ifndef __FROSTEDWM__INPUT__KEY_H_
+#define __FROSTEDWM__INPUT__KEY_H_ 1
 
 #include <stdint.h>
 
@@ -11,6 +11,7 @@ typedef uint16_t key_t;
 #define KEY_STATE_REPEAT    (2)
 #define KEY_STATE_RELEASE   (3)
 
+#define KEY_FIRST           KEY_SPACE
 #define KEY_SPACE           (0)
 #define KEY_APOSTROPHE      (1)
 #define KEY_COMMA           (2)
@@ -129,5 +130,8 @@ typedef uint16_t key_t;
 #define KEY_KP_ADD          (115)
 #define KEY_KP_ENTER        (116)
 #define KEY_KP_EQUAL        (117)
+#define KEY_LAST            (KEY_KP_EQUAL)
+
+key_state_t frostedwm_keyboard_get_key(key_t key);
 
 #endif

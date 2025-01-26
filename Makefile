@@ -11,7 +11,7 @@ CFLAGS := \
 ASFLAGS :=
 LDFLAGS := \
     -nostdlib \
-    -static \
+    -shared \
     -pie \
     --no-dynamic-linker \
     -z text \
@@ -19,14 +19,10 @@ LDFLAGS := \
     -T ./linker.ld
 
 CFILES := $(shell find -L src -type f -name '*.c')
-ASFILES := $(shell find -L src -type f -name '*.S')
-NASMFILES := $(shell find -L src -type f -name '*.asm')
 
 CFILES := $(subst src/,,$(CFILES))
-ASFILES := $(subst src/,,$(ASFILES))
-NASMFILES := $(subst src/,,$(NASMFILES))
 
-objects = $(addprefix obj/,$(CFILES:.c=.o) $(ASFILES:.S=.o) $(NASMFILES:.asm=.o))
+objects = $(addprefix obj/,$(CFILES:.c=.o))
 
 all: $(objects) $(TARGET)
 

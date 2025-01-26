@@ -1,27 +1,49 @@
 #include <frostedwm/context.h>
 
-frostedwm_context frostedwm_create_context(void* framebuffer0, void* framebuffer1, frostedwm_point2i size)
+frostedwm_context ctx = {
+    .framebuffer = {
+        .size = {0,0},
+        .address = NULL,
+    },
+    .frontbuffer_address = NULL,
+    .backbuffer_address = NULL,
+    .draw = 0,
+    .set_pixel = 0,
+    .set_area = 0,
+    .allocate = 0,
+    .deallocate = 0,
+};
+
+frostedwm_context* frostedwm_create_context(void* framebuffer0, void* framebuffer1, frostedwm_point2i size)
 {
-    frostedwm_context ctx = {
+    ctx = (frostedwm_context){
         .framebuffer = {
             .size = size,
             .address = framebuffer0,
         },
         .frontbuffer_address = framebuffer0,
         .backbuffer_address = framebuffer1,
-        .draw_frame = 0,
+        .draw = 0,
         .set_pixel = 0,
         .set_area = 0,
+        .allocate = 0,
+        .deallocate = 0,
     };
-    return ctx;
+    return &ctx;
 }
 
-#pragma GCC push_options
-#pragma GCC optimize ("O0")
+void frostedwm_context_set_callbacks(frostedwm_context* context, set_pixel_t px, set_area_t area, allocate_t alloc, deallocate_t dealloc)
+{
+    if (context == NULL)
+        return;
 
-int _start(void){
-
-    return 0;
+    context->set_pixel = px;
+    context->set_area = area;
+    context->allocate = alloc;
+    context->deallocate = dealloc;
 }
 
-#pragma GCC pop_options
+int _start()
+{
+    return 0x10;
+}

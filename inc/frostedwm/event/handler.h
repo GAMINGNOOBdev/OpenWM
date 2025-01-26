@@ -1,0 +1,6 @@
+#ifndef __FROSTEDWM__EVENTS__HANDLER_H_
+#define __FROSTEDWM__EVENTS__HANDLER_H_ 1
+
+
+
+#endif
