@@ -38,6 +38,10 @@ void init_ssfn(uint64_t* ptr, int w, int h, uint64_t pitch, int fonts_loaded, ..
     va_end(args);
 }
 
+void ssfn_set_fg_color(uint32_t* fg){
+    ssfn_buf.fg = fg;
+}
+
 void ssfn_print(const char* msg){
     ssfn_render(&ssfn_ctx, &ssfn_buf, msg);
 }

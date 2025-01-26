@@ -20,6 +20,7 @@ extern ssfn_t ssfn_ctx;
 extern ssfn_buf_t ssfn_buf;
 
 void init_ssfn(uint64_t* ptr, int w, int h, uint64_t pitch, int fonts_loaded, ...);
+void ssfn_set_fg_color(uint32_t* fg)
 void ssfn_print(const char* msg);
 void _ssfn_select(int family, char* name, int style, int size);
 void _ssfn_free();
