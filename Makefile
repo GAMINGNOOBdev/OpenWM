@@ -13,10 +13,8 @@ LDFLAGS := \
     -nostdlib \
     -shared \
     -pie \
-    --no-dynamic-linker \
     -z text \
-    -z max-page-size=0x1000 \
-    -T ./linker.ld
+    -z max-page-size=0x1000
 
 CFILES := $(shell find -L src -type f -name '*.c')
 
