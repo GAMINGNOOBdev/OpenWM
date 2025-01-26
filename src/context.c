@@ -1,50 +1,33 @@
+#include <frostedwm/event/handler.h>
 #include <frostedwm/context.h>
 
-frostedwm_context ctx = {
-    .framebuffer = {
-        .size = {0,0},
-        .address = NULL,
-    },
-    .frontbuffer_address = NULL,
-    .backbuffer_address = NULL,
-    .draw = 0,
-    .set_pixel = 0,
-    .set_area = 0,
-    .allocate = 0,
-    .deallocate = 0,
-};
-
-frostedwm_context* frostedwm_create_context(void* framebuffer0, void* framebuffer1, frostedwm_point2i size)
+frostedwm_context* frostedwm_create_context(frostedwm_point2i size, uint8_t fb_pitch, allocate_t alloc, reallocate_t realloc, deallocate_t dealloc)
 {
-    ctx = (frostedwm_context){
-        .framebuffer = {
-            .size = size,
-            .address = framebuffer0,
+    frostedwm_context* ctx = alloc(sizeof(frostedwm_context));
+    *ctx = (frostedwm_context){
+        .framebuffer_size = {
+            .x=size.x,
+            .y=size.y,
         },
-        .frontbuffer_address = framebuffer0,
-        .backbuffer_address = framebuffer1,
+        .framebuffer_pitch = fb_pitch,
+        .handlers = NULL,
         .draw = 0,
         .set_pixel = 0,
         .set_area = 0,
-        .allocate = 0,
-        .deallocate = 0,
+        .allocate = alloc,
+        .reallocate = realloc,
+        .deallocate = dealloc,
     };
-    return &ctx;
+    handler_list_t* handlers = frostedwm_create_handler_list(ctx);
+    ctx->handlers = handlers;
+    return ctx;
 }
 
-void frostedwm_context_set_callbacks(frostedwm_context* context, set_pixel_t px, set_area_t area, allocate_t alloc, deallocate_t dealloc)
+void frostedwm_context_set_callbacks(frostedwm_context* context, set_pixel_t px, set_area_t area)
 {
     if (context == NULL)
         return;
 
     context->set_pixel = px;
     context->set_area = area;
-    context->allocate = alloc;
-    context->deallocate = dealloc;
-}
-
-int _start()
-{
-    
-    return 0x10;
 }
