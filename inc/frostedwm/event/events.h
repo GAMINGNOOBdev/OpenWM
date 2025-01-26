@@ -37,4 +37,7 @@ typedef struct
     uint32_t info1;
 } event_t;
 
+struct frostedwm_context;
+void frostedwm_send_event(struct frostedwm_context* ctx, event_t event);
+
 #endif
