@@ -3,7 +3,7 @@ SRC_DIR := src
 INC_DIR := inc
 OBJ_DIR := obj
 
-TARGET := $(BIN_DIR)/libFrostedWM.bin
+TARGET := $(BIN_DIR)/libFrostedWM.so
 
 CFLAGS := \
 	-I$(INC_DIR)

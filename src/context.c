@@ -16,7 +16,12 @@ frostedwm_context frostedwm_create_context(void* framebuffer0, void* framebuffer
     return ctx;
 }
 
-int _start(){
+#pragma GCC push_options
+#pragma GCC optimize ("O0")
+
+int _start(void){
 
     return 0;
 }
+
+#pragma GCC pop_options
