@@ -2,3 +2,4 @@ obj
 bin
 *.o
 *.so
+.vscode

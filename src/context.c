@@ -45,5 +45,6 @@ void frostedwm_context_set_callbacks(frostedwm_context* context, set_pixel_t px,
 
 int _start()
 {
+    
     return 0x10;
 }

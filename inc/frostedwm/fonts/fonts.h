@@ -1,0 +1,27 @@
+/**
+ * @file fonts.h
+ * @author Pradosh (pradoshgame@gmail.com)
+ * @brief 
+ * @version 0.1
+ * @date 2025-01-26
+ * 
+ * @copyright Copyright (c) 2025
+ * 
+ */
+
+#ifndef __FROSTEDWM__FONTS_H_
+#define __FROSTEDWM__FONTS_H_ 1
+
+#include <frostedwm/fonts/ssfn.h>
+#include <stdarg.h>
+#include <stddef.h>
+
+extern ssfn_t ssfn_ctx;
+extern ssfn_buf_t ssfn_buf;
+
+void init_ssfn(uint64_t* ptr, int w, int h, uint64_t pitch, int fonts_loaded, ...);
+void ssfn_print(const char* msg);
+void _ssfn_select(int family, char* name, int style, int size);
+void _ssfn_free();
+
+#endif
