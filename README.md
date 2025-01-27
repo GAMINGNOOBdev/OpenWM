@@ -1,6 +1,6 @@
-# Frost-WM: A Window Manager for osdev
+# FrostedWM: A Window Manager for FrostWing
 
-This repository contains the source code for Frost-WM, a lightweight window manager designed for the FrostWing [OS](https://github.com/Frost-Wing/osdev). 
+This repository contains the source code for FrostedWM, a lightweight window manager designed for the FrostWing [OS](https://github.com/Frost-Wing/osdev). 
 
 ## Features
 
