@@ -283,6 +283,7 @@
  }
  #endif
  
+ #define SSFN_IMPLEMENTATION
  #ifdef SSFN_IMPLEMENTATION
  /*** normal renderer (ca. 28k, fully featured with error checking) ***/
  

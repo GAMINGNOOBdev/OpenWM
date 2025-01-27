@@ -10,6 +10,7 @@
  */
 #include <frostedwm/fonts/fonts.h>
 #define SSFN_IMPLEMENTATION
+#include <frostedwm/fonts/ssfn.h>
 
 ssfn_t ssfn_ctx = { 0 };
 ssfn_buf_t ssfn_buf;
