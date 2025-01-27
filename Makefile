@@ -6,10 +6,11 @@ OBJ_DIR := obj
 TARGET := $(BIN_DIR)/libFrostedWM.so
 
 CFLAGS := \
-	-I$(INC_DIR) -fPIC
+	-I$(INC_DIR) -fPIC -g
 LDFLAGS := \
     -nostdlib \
     -shared \
+    -Bsymbolic \
     -z max-page-size=0x1000
 
 CFILES := $(shell find -L src -type f -name '*.c')

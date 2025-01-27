@@ -4,8 +4,8 @@
 #include <stdint.h>
 #include "../types.h"
 
-typedef uint8_t mouse_button_state_t;
-typedef uint8_t mouse_button_t;
+typedef uint8_t frostedwm_mouse_button_state_t;
+typedef uint8_t frostedwm_mouse_button_t;
 
 #define MOUSE_BUTTON_STATE_NONE     (0)
 #define MOUSE_BUTTON_STATE_PRESS    (1)
@@ -38,6 +38,6 @@ frostedwm_point2i frostedwm_mouse_get_position(void);
 /**
  * Get the state of a given mouse button
 */
-mouse_button_state_t frostedwm_mouse_get_button(mouse_button_t button);
+frostedwm_mouse_button_state_t frostedwm_mouse_get_button(frostedwm_mouse_button_t button);
 
 #endif

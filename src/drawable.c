@@ -19,10 +19,14 @@ frostedwm_drawable* frostedwm_create_drawable(struct frostedwm_context* ctx, fro
         .custom_data = custom_data,
         .children_start = NULL,
         .children_end = NULL,
+        .on_event_handle = NULL,
+        .on_mouse_scroll = NULL,
+        .on_mouse_button = NULL,
+        .on_mouse_move = NULL,
+        .on_key_press = NULL,
         .prev = NULL,
         .next = NULL,
     };
-
 
     return drawable;
 }

@@ -1,5 +1,5 @@
 #include "frostedwm/drawable.h"
-#include <frostedwm/event/handler.h>
+#include "frostedwm/event/events.h"
 #include <frostedwm/context.h>
 
 void frostedwm_draw(struct frostedwm_context* ctx)
@@ -24,18 +24,18 @@ frostedwm_context* frostedwm_create_context(frostedwm_point2i size, size_t fb_pi
             .y=size.y,
         },
         .framebuffer_pitch = fb_pitch,
-        .handlers = NULL,
         .drawlist_start = NULL,
         .drawlist_end = NULL,
         .draw = frostedwm_draw,
+        .event_queue = NULL,
         .set_pixel = 0,
         .set_area = 0,
+        .set_rect = 0,
         .allocate = alloc,
         .reallocate = realloc,
         .deallocate = dealloc,
     };
-    handler_list_t* handlers = frostedwm_create_handler_list(ctx);
-    ctx->handlers = handlers;
+    ctx->event_queue = frostedwm_create_event_queue(ctx);
     return ctx;
 }
 
@@ -82,13 +82,14 @@ frostedwm_drawable* frostedwm_context_remove_drawable(frostedwm_context* context
     return NULL;
 }
 
-void frostedwm_context_set_callbacks(frostedwm_context* context, set_pixel_t px, set_area_t area)
+void frostedwm_context_set_callbacks(frostedwm_context* context, set_pixel_t px, set_area_t area, set_rect_t rect)
 {
     if (context == NULL)
         return;
 
     context->set_pixel = px;
     context->set_area = area;
+    context->set_rect = rect;
 }
 
 void frostedwm_dispose_context(frostedwm_context* context)
@@ -99,6 +100,6 @@ void frostedwm_dispose_context(frostedwm_context* context)
     for (frostedwm_drawable* drawable = context->drawlist_start; drawable != NULL; drawable = drawable->next)
         frostedwm_dispose_drawable(context, drawable);
 
-    frostedwm_disose_handler_list(context, context->handlers);
+    frostedwm_dispose_event_queue(context, context->event_queue);
     context->deallocate(context);
 }

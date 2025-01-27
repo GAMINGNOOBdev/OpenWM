@@ -3,8 +3,8 @@
 
 #include <stdint.h>
 
-typedef uint8_t key_state_t;
-typedef uint16_t key_t;
+typedef uint8_t frostedwm_key_state_t;
+typedef uint16_t frostedwm_key_t;
 
 #define KEY_STATE_NONE      (0)
 #define KEY_STATE_PRESS     (1)
@@ -132,6 +132,6 @@ typedef uint16_t key_t;
 #define KEY_KP_EQUAL        (117)
 #define KEY_LAST            (KEY_KP_EQUAL)
 
-key_state_t frostedwm_keyboard_get_key(key_t key);
+frostedwm_key_state_t frostedwm_keyboard_get_key(frostedwm_key_t key);
 
 #endif

@@ -2,11 +2,17 @@
 #define __FROSTEDWM__DRAWABLE_H_ 1
 
 #include "types.h"
+#include "event/events.h"
 
 struct frostedwm_context;
 struct frostedwm_drawable;
 
 typedef void(*frostedwm_drawable_draw_t)(struct frostedwm_context* ctx, struct frostedwm_drawable* drawable);
+typedef void (*frostedwm_on_event_handle_t)(struct frostedwm_drawable *self, frostedwm_event_t event);
+typedef void (*frostedwm_on_mouse_scroll_t)(struct frostedwm_drawable *self, frostedwm_event_t event);
+typedef void (*frostedwm_on_mouse_button_t)(struct frostedwm_drawable *self, frostedwm_event_t event);
+typedef void (*frostedwm_on_mouse_move_t)(struct frostedwm_drawable *self, frostedwm_event_t event);
+typedef void (*frostedwm_on_key_press_t)(struct frostedwm_drawable *self, frostedwm_event_t event);
 
 typedef struct frostedwm_drawable
 {
@@ -18,6 +24,12 @@ typedef struct frostedwm_drawable
     struct frostedwm_drawable *children_start;
     struct frostedwm_drawable *children_end;
 
+    frostedwm_on_event_handle_t on_event_handle;
+    frostedwm_on_mouse_scroll_t on_mouse_scroll;
+    frostedwm_on_mouse_button_t on_mouse_button;
+    frostedwm_on_mouse_move_t on_mouse_move;
+    frostedwm_on_key_press_t on_key_press;
+    
     struct frostedwm_drawable *prev;
     struct frostedwm_drawable *next;
 } frostedwm_drawable;

@@ -14,7 +14,7 @@ void frostedwm_window_draw(struct frostedwm_context* ctx, struct frostedwm_drawa
     frostedwm_point2i size = window->drawable.size;
 
     // draw border
-    ctx->set_area(pos, size, COLOR_BORDER_BAR);
+    ctx->set_rect(pos, size, WINDOW_BORDER_WIDTH, COLOR_BORDER_BAR);
     pos.x += WINDOW_BORDER_WIDTH;
     pos.y += WINDOW_BORDER_WIDTH;
     size.x -= WINDOW_BORDER_WIDTH*2;
