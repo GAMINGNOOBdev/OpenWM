@@ -2,6 +2,7 @@
 #include "frostedwm/types.h"
 #include <frostedwm/context.h>
 #include <frostedwm/window.h>
+#include <frostedwm/fonts/fonts.h>
 
 void frostedwm_window_draw(struct frostedwm_context* ctx, struct frostedwm_drawable* drawable)
 {
@@ -21,14 +22,21 @@ void frostedwm_window_draw(struct frostedwm_context* ctx, struct frostedwm_drawa
     size.y -= WINDOW_BORDER_WIDTH*2;
 
     // draw title bar (also display text later)
-    ctx->set_area(pos, FROSTEDWM_POINT2I(size.x, WINDOW_TITLEBAR_HEIGHT), COLOR_TITLE_BAR);
-    pos.y += WINDOW_TITLEBAR_HEIGHT;
-    size.y -= WINDOW_TITLEBAR_HEIGHT;
+    ctx->set_area(pos, FROSTEDWM_POINT2I(size.x, WINDOW_TITLEBAR_HEIGHT), COLOR_TITLE_BAR_1);
+    pos.y += WINDOW_TITLEBAR_HEIGHT/2;
+    size.y -= WINDOW_TITLEBAR_HEIGHT/2;
+
+    // init_ssfn(ctx->framebuffer_address, ctx->framebuffer_size.x, ctx->framebuffer_size.y, ctx->framebuffer_pitch, 1, ctx->font_address);
+    // ssfn_print(window->title);
+
+    ctx->set_area(pos, FROSTEDWM_POINT2I(size.x, WINDOW_TITLEBAR_HEIGHT), COLOR_TITLE_BAR_2);
+    pos.y += WINDOW_TITLEBAR_HEIGHT/2;
+    size.y -= WINDOW_TITLEBAR_HEIGHT/2;
 
     // draw border around (just below) the title bar
-    ctx->set_area(pos, FROSTEDWM_POINT2I(size.x, WINDOW_BORDER_WIDTH), COLOR_BORDER_BAR);
-    pos.y += WINDOW_BORDER_WIDTH;
-    size.y -= WINDOW_BORDER_WIDTH;
+    // ctx->set_area(pos, FROSTEDWM_POINT2I(size.x, WINDOW_BORDER_WIDTH), COLOR_BORDER_BAR);
+    // pos.y += WINDOW_BORDER_WIDTH;
+    // size.y -= WINDOW_BORDER_WIDTH;
 
     // draw window background
     ctx->set_area(pos, size, COLOR_CONTENTS);

@@ -15,7 +15,7 @@ void frostedwm_draw(struct frostedwm_context* ctx)
             drawable->draw(ctx, drawable);
 }
 
-frostedwm_context* frostedwm_create_context(frostedwm_point2i size, size_t fb_pitch, allocate_t alloc, reallocate_t realloc, deallocate_t dealloc)
+frostedwm_context* frostedwm_create_context(frostedwm_point2i size, uint64_t* fb_addr, uint64_t* font_addr, size_t fb_pitch, allocate_t alloc, reallocate_t realloc, deallocate_t dealloc)
 {
     frostedwm_context* ctx = alloc(sizeof(frostedwm_context));
     *ctx = (frostedwm_context){
@@ -24,6 +24,8 @@ frostedwm_context* frostedwm_create_context(frostedwm_point2i size, size_t fb_pi
             .y=size.y,
         },
         .framebuffer_pitch = fb_pitch,
+        .framebuffer_address = fb_addr,
+        .font_address = font_addr,
         .drawlist_start = NULL,
         .drawlist_end = NULL,
         .draw = frostedwm_draw,

@@ -20,6 +20,8 @@ typedef void(*draw_t)(struct frostedwm_context* ctx);
 typedef struct frostedwm_context
 {
     frostedwm_point2i framebuffer_size;
+    uint64_t* framebuffer_address;
+    uint64_t* font_address;
     size_t framebuffer_pitch;
 
     frostedwm_drawable* drawlist_start;
@@ -36,7 +38,7 @@ typedef struct frostedwm_context
     deallocate_t deallocate;
 } frostedwm_context;
 
-frostedwm_context* frostedwm_create_context(frostedwm_point2i fb_size, size_t fb_pitch, allocate_t alloc, reallocate_t realloc, deallocate_t dealloc);
+frostedwm_context* frostedwm_create_context(frostedwm_point2i fb_size, uint64_t* fb_addr, uint64_t* font_addr, size_t fb_pitch, allocate_t alloc, reallocate_t realloc, deallocate_t dealloc);
 
 void frostedwm_context_add_drawable(frostedwm_context* context, frostedwm_drawable* drawable);
 

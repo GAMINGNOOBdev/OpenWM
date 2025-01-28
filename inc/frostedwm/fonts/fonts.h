@@ -12,12 +12,9 @@
 #ifndef __FROSTEDWM__FONTS_H_
 #define __FROSTEDWM__FONTS_H_ 1
 
-#include <frostedwm/fonts/ssfn.h>
+#include <stdint.h>
 #include <stdarg.h>
 #include <stddef.h>
-
-extern ssfn_t ssfn_ctx;
-extern ssfn_buf_t ssfn_buf;
 
 void init_ssfn(uint64_t* ptr, int w, int h, uint64_t pitch, int fonts_loaded, ...);
 void ssfn_set_fg_color(uint32_t* fg);
