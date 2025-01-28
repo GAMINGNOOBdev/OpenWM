@@ -1,17 +1,17 @@
-#include <frostedwm/drawable.h>
-#include <frostedwm/context.h>
+#include <openwm/drawable.h>
+#include <openwm/context.h>
 #include <string.h>
 
-frostedwm_drawable* frostedwm_create_drawable(struct frostedwm_context* ctx, frostedwm_point2i pos, frostedwm_point2i size, frostedwm_drawable_draw_t draw, void* custom_data)
+openwm_drawable* openwm_create_drawable(struct openwm_context* ctx, openwm_point2i pos, openwm_point2i size, openwm_drawable_draw_t draw, void* custom_data)
 {
     if (ctx == NULL)
         return NULL;
 
-    frostedwm_drawable* drawable = ctx->allocate(sizeof(frostedwm_drawable));
+    openwm_drawable* drawable = ctx->allocate(sizeof(openwm_drawable));
     if (drawable == NULL)
         return NULL;
 
-    *drawable = (frostedwm_drawable){
+    *drawable = (openwm_drawable){
         .pos = pos,
         .size = size,
         .draw = draw,
@@ -31,7 +31,7 @@ frostedwm_drawable* frostedwm_create_drawable(struct frostedwm_context* ctx, fro
     return drawable;
 }
 
-void frostedwm_drawable_add_child(frostedwm_drawable* drawable, frostedwm_drawable* child)
+void openwm_drawable_add_child(openwm_drawable* drawable, openwm_drawable* child)
 {
     if (drawable == NULL || child == NULL)
         return;
@@ -47,15 +47,15 @@ void frostedwm_drawable_add_child(frostedwm_drawable* drawable, frostedwm_drawab
     drawable->children_end = child;
 }
 
-void frostedwm_dispose_drawable(struct frostedwm_context* ctx, frostedwm_drawable* drawable)
+void openwm_dispose_drawable(struct openwm_context* ctx, openwm_drawable* drawable)
 {
     if (drawable == NULL)
         return;
 
     if (drawable->children_start != NULL)
     {
-        for (frostedwm_drawable* child = drawable->children_start; child != NULL; child = child->next)
-            frostedwm_dispose_drawable(ctx, child);
+        for (openwm_drawable* child = drawable->children_start; child != NULL; child = child->next)
+            openwm_dispose_drawable(ctx, child);
     }
 
     if (drawable->custom_data != NULL)

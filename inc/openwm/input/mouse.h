@@ -1,11 +1,11 @@
-#ifndef __FROSTEDWM__INPUT__MOUSE_H_
-#define __FROSTEDWM__INPUT__MOUSE_H_ 1
+#ifndef __OPENWM__INPUT__MOUSE_H_
+#define __OPENWM__INPUT__MOUSE_H_ 1
 
 #include <stdint.h>
 #include "../types.h"
 
-typedef uint8_t frostedwm_mouse_button_state_t;
-typedef uint8_t frostedwm_mouse_button_t;
+typedef uint8_t openwm_mouse_button_state_t;
+typedef uint8_t openwm_mouse_button_t;
 
 #define MOUSE_BUTTON_STATE_NONE     (0)
 #define MOUSE_BUTTON_STATE_PRESS    (1)
@@ -33,11 +33,11 @@ typedef uint8_t frostedwm_mouse_button_t;
 /**
  * Get the current mouse position
 */
-frostedwm_point2i frostedwm_mouse_get_position(void);
+openwm_point2i openwm_mouse_get_position(void);
 
 /**
  * Get the state of a given mouse button
 */
-frostedwm_mouse_button_state_t frostedwm_mouse_get_button(frostedwm_mouse_button_t button);
+openwm_mouse_button_state_t openwm_mouse_get_button(openwm_mouse_button_t button);
 
 #endif

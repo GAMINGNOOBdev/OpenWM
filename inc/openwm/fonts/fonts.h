@@ -9,8 +9,8 @@
  * 
  */
 
-#ifndef __FROSTEDWM__FONTS_H_
-#define __FROSTEDWM__FONTS_H_ 1
+#ifndef __OPENWM__FONTS_H_
+#define __OPENWM__FONTS_H_ 1
 
 #include <stdint.h>
 #include <stdarg.h>

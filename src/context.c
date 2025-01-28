@@ -1,8 +1,8 @@
-#include "frostedwm/drawable.h"
-#include "frostedwm/event/events.h"
-#include <frostedwm/context.h>
+#include "openwm/drawable.h"
+#include "openwm/event/events.h"
+#include <openwm/context.h>
 
-void frostedwm_draw(struct frostedwm_context* ctx)
+void openwm_draw(struct openwm_context* ctx)
 {
     if (ctx == NULL)
         return;
@@ -10,15 +10,15 @@ void frostedwm_draw(struct frostedwm_context* ctx)
     if (ctx->drawlist_start == NULL)
         return;
 
-    for (frostedwm_drawable* drawable = ctx->drawlist_start; drawable != NULL; drawable = drawable->next)
+    for (openwm_drawable* drawable = ctx->drawlist_start; drawable != NULL; drawable = drawable->next)
         if (drawable->enabled && drawable->draw != NULL)
             drawable->draw(ctx, drawable);
 }
 
-frostedwm_context* frostedwm_create_context(frostedwm_point2i size, uint64_t* fb_addr, uint64_t* font_addr, size_t fb_pitch, allocate_t alloc, reallocate_t realloc, deallocate_t dealloc)
+openwm_context* openwm_create_context(openwm_point2i size, uint64_t* fb_addr, uint64_t* font_addr, size_t fb_pitch, allocate_t alloc, reallocate_t realloc, deallocate_t dealloc)
 {
-    frostedwm_context* ctx = alloc(sizeof(frostedwm_context));
-    *ctx = (frostedwm_context){
+    openwm_context* ctx = alloc(sizeof(openwm_context));
+    *ctx = (openwm_context){
         .framebuffer_size = {
             .x=size.x,
             .y=size.y,
@@ -28,7 +28,7 @@ frostedwm_context* frostedwm_create_context(frostedwm_point2i size, uint64_t* fb
         .font_address = font_addr,
         .drawlist_start = NULL,
         .drawlist_end = NULL,
-        .draw = frostedwm_draw,
+        .draw = openwm_draw,
         .event_queue = NULL,
         .set_pixel = 0,
         .set_area = 0,
@@ -37,11 +37,12 @@ frostedwm_context* frostedwm_create_context(frostedwm_point2i size, uint64_t* fb
         .reallocate = realloc,
         .deallocate = dealloc,
     };
-    ctx->event_queue = frostedwm_create_event_queue(ctx);
+    ctx->event_queue = openwm_create_event_queue(ctx);
+    // init_ssfn(ctx->framebuffer_address, ctx->framebuffer_size.x, ctx->framebuffer_size.y, ctx->framebuffer_pitch, 1, ctx->font_address);
     return ctx;
 }
 
-void frostedwm_context_add_drawable(frostedwm_context* context, frostedwm_drawable* drawable)
+void openwm_context_add_drawable(openwm_context* context, openwm_drawable* drawable)
 {
     if (context == NULL || drawable == NULL)
         return;
@@ -57,7 +58,7 @@ void frostedwm_context_add_drawable(frostedwm_context* context, frostedwm_drawab
     context->drawlist_end = drawable;
 }
 
-frostedwm_drawable* frostedwm_context_remove_drawable(frostedwm_context* context, frostedwm_drawable* drawable)
+openwm_drawable* openwm_context_remove_drawable(openwm_context* context, openwm_drawable* drawable)
 {
     if (context == NULL || drawable == NULL)
         return NULL;
@@ -65,7 +66,7 @@ frostedwm_drawable* frostedwm_context_remove_drawable(frostedwm_context* context
     if (context->drawlist_start == NULL)
         return NULL;
 
-    for (frostedwm_drawable* entry = context->drawlist_start; entry != NULL; entry = entry->next)
+    for (openwm_drawable* entry = context->drawlist_start; entry != NULL; entry = entry->next)
     {
         if (entry != drawable)
             continue;
@@ -84,7 +85,7 @@ frostedwm_drawable* frostedwm_context_remove_drawable(frostedwm_context* context
     return NULL;
 }
 
-void frostedwm_context_set_callbacks(frostedwm_context* context, set_pixel_t px, set_area_t area, set_rect_t rect)
+void openwm_context_set_callbacks(openwm_context* context, set_pixel_t px, set_area_t area, set_rect_t rect)
 {
     if (context == NULL)
         return;
@@ -94,14 +95,14 @@ void frostedwm_context_set_callbacks(frostedwm_context* context, set_pixel_t px,
     context->set_rect = rect;
 }
 
-void frostedwm_dispose_context(frostedwm_context* context)
+void openwm_dispose_context(openwm_context* context)
 {
     if (context == NULL)
         return;
 
-    for (frostedwm_drawable* drawable = context->drawlist_start; drawable != NULL; drawable = drawable->next)
-        frostedwm_dispose_drawable(context, drawable);
+    for (openwm_drawable* drawable = context->drawlist_start; drawable != NULL; drawable = drawable->next)
+        openwm_dispose_drawable(context, drawable);
 
-    frostedwm_dispose_event_queue(context, context->event_queue);
+    openwm_dispose_event_queue(context, context->event_queue);
     context->deallocate(context);
 }

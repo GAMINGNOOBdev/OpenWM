@@ -1,8 +1,8 @@
-#include "frostedwm/drawable.h"
-#include <frostedwm/event/events.h>
-#include <frostedwm/context.h>
+#include "openwm/drawable.h"
+#include <openwm/event/events.h>
+#include <openwm/context.h>
 
-frostedwm_event_queue_t* frostedwm_create_event_queue(struct frostedwm_context* ctx)
+openwm_event_queue_t* openwm_create_event_queue(struct openwm_context* ctx)
 {
     if (ctx == NULL)
         return NULL;
@@ -10,18 +10,18 @@ frostedwm_event_queue_t* frostedwm_create_event_queue(struct frostedwm_context* 
     if (ctx->allocate == NULL || ctx->deallocate == NULL)
         return NULL;
 
-    frostedwm_event_queue_t* queue = ctx->allocate(sizeof(frostedwm_event_queue_t));
+    openwm_event_queue_t* queue = ctx->allocate(sizeof(openwm_event_queue_t));
     if (queue == NULL)
         return NULL;
 
-    void* buffer = ctx->allocate(sizeof(frostedwm_event_t)*EVENT_QUEUE_BUFFER);
+    void* buffer = ctx->allocate(sizeof(openwm_event_t)*EVENT_QUEUE_BUFFER);
     if (buffer == NULL)
     {
         ctx->deallocate(queue);
         return NULL;
     }
 
-    *queue = (frostedwm_event_queue_t){
+    *queue = (openwm_event_queue_t){
         .events_buffer_size = EVENT_QUEUE_BUFFER,
         .count = 0,
         .events = buffer,
@@ -30,7 +30,7 @@ frostedwm_event_queue_t* frostedwm_create_event_queue(struct frostedwm_context* 
     return queue;
 }
 
-void frostedwm_dispose_event_queue(struct frostedwm_context* ctx, frostedwm_event_queue_t* queue)
+void openwm_dispose_event_queue(struct openwm_context* ctx, openwm_event_queue_t* queue)
 {
     if (ctx == NULL || queue == NULL)
         return;
@@ -39,7 +39,7 @@ void frostedwm_dispose_event_queue(struct frostedwm_context* ctx, frostedwm_even
     ctx->deallocate(queue);
 }
 
-int frostedwm_send_event(frostedwm_event_queue_t* queue, frostedwm_event_t event)
+int openwm_send_event(openwm_event_queue_t* queue, openwm_event_t event)
 {
     if (queue == NULL)
         return 0;
@@ -52,7 +52,7 @@ int frostedwm_send_event(frostedwm_event_queue_t* queue, frostedwm_event_t event
     return 1;
 }
 
-void frostedwm_handle_event(frostedwm_drawable* drawable, frostedwm_event_t event)
+void openwm_handle_event(openwm_drawable* drawable, openwm_event_t event)
 {
     if ((event.type == EVENT_TYPE_GENERAL || event.type == EVENT_TYPE_WINDOW) && drawable->on_event_handle != NULL)
     {
@@ -76,17 +76,17 @@ void frostedwm_handle_event(frostedwm_drawable* drawable, frostedwm_event_t even
     }
 }
 
-frostedwm_drawable* frostedwm_find_drawable(struct frostedwm_context* ctx)
+openwm_drawable* openwm_find_drawable(struct openwm_context* ctx)
 {
-    frostedwm_drawable* drawable = NULL;
-    for (frostedwm_drawable* entry = ctx->drawlist_start; entry != NULL; entry = entry->next)
+    openwm_drawable* drawable = NULL;
+    for (openwm_drawable* entry = ctx->drawlist_start; entry != NULL; entry = entry->next)
     {
         // add some sort of focus system
     }
     return drawable;
 }
 
-void frostedwm_handle_events(struct frostedwm_context* ctx)
+void openwm_handle_events(struct openwm_context* ctx)
 {
     if (ctx == NULL)
         return;
@@ -97,8 +97,8 @@ void frostedwm_handle_events(struct frostedwm_context* ctx)
 
     for (size_t i = 0; i < ctx->event_queue->count; i++)
     {
-        frostedwm_drawable* drawable = frostedwm_find_drawable(ctx);
-        frostedwm_handle_event(drawable, ctx->event_queue->events[i]);
+        openwm_drawable* drawable = openwm_find_drawable(ctx);
+        openwm_handle_event(drawable, ctx->event_queue->events[i]);
     }
     ctx->event_queue->count=0;
 }

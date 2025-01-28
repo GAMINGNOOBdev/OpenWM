@@ -1,10 +1,10 @@
-#ifndef __FROSTEDWM__INPUT__KEY_H_
-#define __FROSTEDWM__INPUT__KEY_H_ 1
+#ifndef __OPENWM__INPUT__KEY_H_
+#define __OPENWM__INPUT__KEY_H_ 1
 
 #include <stdint.h>
 
-typedef uint8_t frostedwm_key_state_t;
-typedef uint16_t frostedwm_key_t;
+typedef uint8_t openwm_key_state_t;
+typedef uint16_t openwm_key_t;
 
 #define KEY_STATE_NONE      (0)
 #define KEY_STATE_PRESS     (1)
@@ -132,6 +132,6 @@ typedef uint16_t frostedwm_key_t;
 #define KEY_KP_EQUAL        (117)
 #define KEY_LAST            (KEY_KP_EQUAL)
 
-frostedwm_key_state_t frostedwm_keyboard_get_key(frostedwm_key_t key);
+openwm_key_state_t openwm_keyboard_get_key(openwm_key_t key);
 
 #endif

@@ -1,20 +1,7 @@
-# FrostedWM: A Window Manager for FrostWing
+# OpenWM: A Window Manager for FrostWing
 
-This repository contains the source code for FrostedWM, a lightweight window manager designed for the FrostWing [OS](https://github.com/Frost-Wing/osdev). 
-
-## Features
-
-* Context and callbacks
-* Image and font rendering.
-
-## Compiling and Usage
-
-*Please refer [Window Manager Wiki](https://github.com/Frost-Wing/osdev/wiki/1.-Building-the-Operating-System.#the-window-manager)*
-
-## Contributing
-
-*Please refer [contributing.md](https://github.com/Frost-Wing/FrostedWM/blob/main/contributing.md)*
+This repository contains the source code for OpenWM, a lightweight window manager designed for custom operating system projects.
 
 ## License
 
-Frost-WM is licensed under the MIT License. See the [LICENSE](https://github.com/Frost-Wing/FrostedWM/blob/main/LICENSE) file for more information.
+OpenWM is licensed under the MIT License. See the [LICENSE](/LICENSE) file for more information.
