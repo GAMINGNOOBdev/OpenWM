@@ -4,5 +4,4 @@ bin
 *.so
 .vscode
 test*
-run.sh
-Vera.sfn
+*.ttf
