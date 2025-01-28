@@ -27,7 +27,7 @@ void openwm_window_draw(struct openwm_context* ctx, struct openwm_drawable* draw
     // ssfn_print(window->title);
 
     // draw border around (just below) the title bar
-    ctx->set_area(pos, OPENWM_POINT2I(size.x, WINDOW_BORDER_WIDTH), COLOR_BORDER_BAR);
+    ctx->set_rect(pos, size, WINDOW_BORDER_WIDTH, COLOR_BORDER_BAR);
     pos.y += WINDOW_BORDER_WIDTH;
     size.y -= WINDOW_BORDER_WIDTH;
 
