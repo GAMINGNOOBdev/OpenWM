@@ -1,5 +1,6 @@
 #include "openwm/drawable.h"
 #include "openwm/event/events.h"
+#include "openwm/fonts/font.h"
 #include <openwm/context.h>
 
 void openwm_draw(struct openwm_context* ctx)
@@ -40,6 +41,90 @@ openwm_context* openwm_create_context(openwm_point2i size, uint64_t* fb_addr, ui
     ctx->event_queue = openwm_create_event_queue(ctx);
     // init_ssfn(ctx->framebuffer_address, ctx->framebuffer_size.x, ctx->framebuffer_size.y, ctx->framebuffer_pitch, 1, ctx->font_address);
     return ctx;
+}
+
+void openwm_context_add_font(openwm_context* context, const char* name, int line_height, void* filedata)
+{
+    if (context == NULL || name == NULL || filedata == NULL)
+        return;
+
+    openwm_font_t* font = openwm_create_font(context, name, line_height, filedata);
+    if (font == NULL)
+        return;
+
+    if (context->fontlist_start == NULL)
+    {
+        context->fontlist_start = context->fontlist_end = font;
+        return;
+    }
+
+    context->fontlist_end->next = font;
+    font->prev = context->fontlist_end;
+    context->fontlist_end = font;
+}
+
+// i don't want to use any outside dependencies for this one, seriously
+int dummy_strcmp(const char* str0, const char* str1)
+{
+    char* s0 = (char*)str0;
+    char* s1 = (char*)str1;
+    while (*s0 != 0 && *s1 != 0 && *s0 == *s1)
+    {
+        s0++;
+        s1++;
+    }
+    return *s0 - *s1;
+}
+
+void openwm_context_remove_font(openwm_context* context, const char* name)
+{
+    if (context == NULL || name == NULL)
+        return;
+
+    if (context->fontlist_start == NULL)
+        return;
+
+    for (openwm_font_t* entry = context->fontlist_start; entry != NULL; entry = entry->next)
+    {
+        if (dummy_strcmp(entry->name, name))
+            continue;
+
+        if (entry->prev)
+            entry->prev->next = entry->next;
+        if (entry->next)
+            entry->next->prev = entry->prev;
+
+        if (entry == context->fontlist_start)
+            context->fontlist_start = context->fontlist_end = NULL;
+
+        openwm_dispose_font(context, entry);
+
+        break;
+    }
+
+    return;
+}
+
+openwm_font_t* openwm_context_get_font(openwm_context* context, const char* name)
+{
+    if (context == NULL)
+        return NULL;
+
+    if (context->fontlist_start == NULL)
+        return NULL;
+
+    if (name == NULL)
+        return context->fontlist_start;
+
+    for (openwm_font_t* entry = context->fontlist_start; entry != NULL; entry = entry->next)
+    {
+        if (dummy_strcmp(entry->name, name))
+            continue;
+
+        return entry;
+    }
+
+    return NULL;
 }
 
 void openwm_context_add_drawable(openwm_context* context, openwm_drawable* drawable)

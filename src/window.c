@@ -1,4 +1,5 @@
 #include "openwm/drawable.h"
+#include "openwm/fonts/font.h"
 #include "openwm/types.h"
 #include <openwm/context.h>
 #include <openwm/window.h>
@@ -27,7 +28,15 @@ void openwm_window_draw(struct openwm_context* ctx, struct openwm_drawable* draw
     size.y -= WINDOW_TITLEBAR_HEIGHT;
 
     // draw text
-    // ssfn_print(window->title);
+    openwm_font_t* font = openwm_context_get_font(ctx, NULL);
+    if (font != NULL)
+    {
+        font->cursor.x = pos.x;
+        font->cursor.y = pos.y;
+        font->color = COLOR_TEXT;
+        openwm_font_set_line_height(font, WINDOW_TITLEBAR_HEIGHT-2);
+        openwm_font_draw_text(ctx, font, window->title, 0);
+    }
 
     // draw border around (just below) the title bar
     ctx->set_area(pos, OPENWM_POINT2I(size.x, WINDOW_BORDER_WIDTH), COLOR_BORDER_BAR);

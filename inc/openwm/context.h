@@ -2,6 +2,7 @@
 #define __OPENWM__CONTEXT_H_ 1
 
 #include "event/events.h"
+#include "fonts/font.h"
 #include "drawable.h"
 #include "types.h"
 #include <stddef.h>
@@ -26,6 +27,8 @@ typedef struct openwm_context
 
     openwm_drawable* drawlist_start;
     openwm_drawable* drawlist_end;
+    openwm_font_t* fontlist_start;
+    openwm_font_t* fontlist_end;
     openwm_event_queue_t* event_queue;
 
     set_pixel_t set_pixel;
@@ -39,6 +42,13 @@ typedef struct openwm_context
 } openwm_context;
 
 openwm_context* openwm_create_context(openwm_point2i fb_size, uint64_t* fb_addr, uint64_t* font_addr, size_t fb_pitch, allocate_t alloc, reallocate_t realloc, deallocate_t dealloc);
+
+void openwm_context_add_font(openwm_context* context, const char* name, int line_height, void* filedata);
+
+void openwm_context_remove_font(openwm_context* context, const char* name);
+
+// passing null as name gives the first available font
+openwm_font_t* openwm_context_get_font(openwm_context* context, const char* name);
 
 void openwm_context_add_drawable(openwm_context* context, openwm_drawable* drawable);
 
