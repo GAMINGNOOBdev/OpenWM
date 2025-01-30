@@ -11,16 +11,16 @@
 #define WINDOW_BORDER_WIDTH 2
 #define WINDOW_TITLEBAR_HEIGHT 34
 
-typedef struct openwm_window
+typedef struct openwm_window_t
 {
-    openwm_drawable drawable;
+    openwm_drawable_t drawable;
     char* title;
-} openwm_window;
+} openwm_window_t;
 
-struct openwm_context;
+struct openwm_context_t;
 
-openwm_window* openwm_create_window(struct openwm_context* ctx, const char* title, openwm_point2i pos, openwm_point2i size);
-void openwm_window_add_child(openwm_window* window, openwm_drawable* child);
-void openwm_dispose_window(struct openwm_context* ctx, openwm_window* window);
+openwm_window_t* openwm_create_window(struct openwm_context_t* ctx, const char* title, openwm_point2i_t pos, openwm_point2i_t size);
+void openwm_window_add_child(openwm_window_t* window, openwm_drawable_t* child);
+void openwm_dispose_window(struct openwm_context_t* ctx, openwm_window_t* window);
 
 #endif

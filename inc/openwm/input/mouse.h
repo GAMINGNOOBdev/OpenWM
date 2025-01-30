@@ -33,7 +33,7 @@ typedef uint8_t openwm_mouse_button_t;
 /**
  * Get the current mouse position
 */
-openwm_point2i openwm_mouse_get_position(void);
+openwm_point2i_t openwm_mouse_get_position(void);
 
 /**
  * Get the state of a given mouse button

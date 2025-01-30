@@ -2,16 +2,16 @@
 #include <openwm/context.h>
 #include <string.h>
 
-openwm_drawable* openwm_create_drawable(struct openwm_context* ctx, openwm_point2i pos, openwm_point2i size, openwm_drawable_draw_t draw, void* custom_data)
+openwm_drawable_t* openwm_create_drawable(openwm_context_t* ctx, openwm_point2i_t pos, openwm_point2i_t size, openwm_drawable_draw_t draw, void* custom_data)
 {
     if (ctx == NULL)
         return NULL;
 
-    openwm_drawable* drawable = ctx->allocate(sizeof(openwm_drawable));
+    openwm_drawable_t* drawable = ctx->allocate(sizeof(openwm_drawable_t));
     if (drawable == NULL)
         return NULL;
 
-    *drawable = (openwm_drawable){
+    *drawable = (openwm_drawable_t){
         .pos = pos,
         .size = size,
         .draw = draw,
@@ -31,7 +31,7 @@ openwm_drawable* openwm_create_drawable(struct openwm_context* ctx, openwm_point
     return drawable;
 }
 
-void openwm_drawable_add_child(openwm_drawable* drawable, openwm_drawable* child)
+void openwm_drawable_add_child(openwm_drawable_t* drawable, openwm_drawable_t* child)
 {
     if (drawable == NULL || child == NULL)
         return;
@@ -47,14 +47,14 @@ void openwm_drawable_add_child(openwm_drawable* drawable, openwm_drawable* child
     drawable->children_end = child;
 }
 
-void openwm_dispose_drawable(struct openwm_context* ctx, openwm_drawable* drawable)
+void openwm_dispose_drawable(openwm_context_t* ctx, openwm_drawable_t* drawable)
 {
     if (drawable == NULL)
         return;
 
     if (drawable->children_start != NULL)
     {
-        for (openwm_drawable* child = drawable->children_start; child != NULL; child = child->next)
+        for (openwm_drawable_t* child = drawable->children_start; child != NULL; child = child->next)
             openwm_dispose_drawable(ctx, child);
     }
 

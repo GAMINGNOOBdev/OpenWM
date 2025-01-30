@@ -31,8 +31,8 @@ typedef struct
 
     // Mouse info
     openwm_mouse_button_state_t mouse_button_state;
-    openwm_point2i relative_movement;
-    openwm_point2i mouse_position;
+    openwm_point2i_t relative_movement;
+    openwm_point2i_t mouse_position;
     openwm_mouse_button_t mouse_button;
     float scroll;
 
@@ -48,12 +48,12 @@ typedef struct
     size_t count;
 } openwm_event_queue_t;
 
-struct openwm_context;
+struct openwm_context_t;
 
-openwm_event_queue_t* openwm_create_event_queue(struct openwm_context* ctx);
-void openwm_dispose_event_queue(struct openwm_context* ctx, openwm_event_queue_t* queue);
+openwm_event_queue_t* openwm_create_event_queue(struct openwm_context_t* ctx);
+void openwm_dispose_event_queue(struct openwm_context_t* ctx, openwm_event_queue_t* queue);
 
 // 1 on success, 0 on failure
 int openwm_send_event(openwm_event_queue_t* queue, openwm_event_t event);
-void openwm_handle_events(struct openwm_context* ctx);
+void openwm_handle_events(struct openwm_context_t* ctx);
 #endif

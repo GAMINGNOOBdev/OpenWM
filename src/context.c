@@ -3,7 +3,7 @@
 #include "openwm/fonts/font.h"
 #include <openwm/context.h>
 
-void openwm_draw(struct openwm_context* ctx)
+void openwm_draw(openwm_context_t* ctx)
 {
     if (ctx == NULL)
         return;
@@ -11,15 +11,15 @@ void openwm_draw(struct openwm_context* ctx)
     if (ctx->drawlist_start == NULL)
         return;
 
-    for (openwm_drawable* drawable = ctx->drawlist_start; drawable != NULL; drawable = drawable->next)
+    for (openwm_drawable_t* drawable = ctx->drawlist_start; drawable != NULL; drawable = drawable->next)
         if (drawable->enabled && drawable->draw != NULL)
             drawable->draw(ctx, drawable);
 }
 
-openwm_context* openwm_create_context(openwm_point2i size, uint64_t* fb_addr, uint64_t* font_addr, size_t fb_pitch, allocate_t alloc, reallocate_t realloc, deallocate_t dealloc)
+openwm_context_t* openwm_create_context(openwm_point2i_t size, uint64_t* fb_addr, uint64_t* font_addr, size_t fb_pitch, allocate_t alloc, reallocate_t realloc, deallocate_t dealloc)
 {
-    openwm_context* ctx = alloc(sizeof(openwm_context));
-    *ctx = (openwm_context){
+    openwm_context_t* ctx = alloc(sizeof(openwm_context_t));
+    *ctx = (openwm_context_t){
         .framebuffer_size = {
             .x=size.x,
             .y=size.y,
@@ -43,7 +43,7 @@ openwm_context* openwm_create_context(openwm_point2i size, uint64_t* fb_addr, ui
     return ctx;
 }
 
-void openwm_context_add_font(openwm_context* context, const char* name, int line_height, void* filedata)
+void openwm_context_add_font(openwm_context_t* context, const char* name, int line_height, void* filedata)
 {
     if (context == NULL || name == NULL || filedata == NULL)
         return;
@@ -76,7 +76,7 @@ int dummy_strcmp(const char* str0, const char* str1)
     return *s0 - *s1;
 }
 
-void openwm_context_remove_font(openwm_context* context, const char* name)
+void openwm_context_remove_font(openwm_context_t* context, const char* name)
 {
     if (context == NULL || name == NULL)
         return;
@@ -105,7 +105,7 @@ void openwm_context_remove_font(openwm_context* context, const char* name)
     return;
 }
 
-openwm_font_t* openwm_context_get_font(openwm_context* context, const char* name)
+openwm_font_t* openwm_context_get_font(openwm_context_t* context, const char* name)
 {
     if (context == NULL)
         return NULL;
@@ -127,7 +127,7 @@ openwm_font_t* openwm_context_get_font(openwm_context* context, const char* name
     return NULL;
 }
 
-void openwm_context_add_drawable(openwm_context* context, openwm_drawable* drawable)
+void openwm_context_add_drawable(openwm_context_t* context, openwm_drawable_t* drawable)
 {
     if (context == NULL || drawable == NULL)
         return;
@@ -143,7 +143,7 @@ void openwm_context_add_drawable(openwm_context* context, openwm_drawable* drawa
     context->drawlist_end = drawable;
 }
 
-openwm_drawable* openwm_context_remove_drawable(openwm_context* context, openwm_drawable* drawable)
+openwm_drawable_t* openwm_context_remove_drawable(openwm_context_t* context, openwm_drawable_t* drawable)
 {
     if (context == NULL || drawable == NULL)
         return NULL;
@@ -151,7 +151,7 @@ openwm_drawable* openwm_context_remove_drawable(openwm_context* context, openwm_
     if (context->drawlist_start == NULL)
         return NULL;
 
-    for (openwm_drawable* entry = context->drawlist_start; entry != NULL; entry = entry->next)
+    for (openwm_drawable_t* entry = context->drawlist_start; entry != NULL; entry = entry->next)
     {
         if (entry != drawable)
             continue;
@@ -170,7 +170,7 @@ openwm_drawable* openwm_context_remove_drawable(openwm_context* context, openwm_
     return NULL;
 }
 
-void openwm_context_set_callbacks(openwm_context* context, set_pixel_t px, set_area_t area, set_rect_t rect)
+void openwm_context_set_callbacks(openwm_context_t* context, set_pixel_t px, set_area_t area, set_rect_t rect)
 {
     if (context == NULL)
         return;
@@ -180,12 +180,12 @@ void openwm_context_set_callbacks(openwm_context* context, set_pixel_t px, set_a
     context->set_rect = rect;
 }
 
-void openwm_dispose_context(openwm_context* context)
+void openwm_dispose_context(openwm_context_t* context)
 {
     if (context == NULL)
         return;
 
-    for (openwm_drawable* drawable = context->drawlist_start; drawable != NULL; drawable = drawable->next)
+    for (openwm_drawable_t* drawable = context->drawlist_start; drawable != NULL; drawable = drawable->next)
         openwm_dispose_drawable(context, drawable);
 
     openwm_dispose_event_queue(context, context->event_queue);

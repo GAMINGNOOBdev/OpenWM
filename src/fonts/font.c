@@ -1,16 +1,53 @@
+#include "openwm/types.h"
 #include <openwm/fonts/font.h>
 #include <openwm/context.h>
 #include <stddef.h>
 #include <malloc.h>
+#include <stdarg.h>
+#include <stdio.h>
 
-#define STBTT_malloc(x,u)  ((void)(u),malloc(x))
-#define STBTT_free(x,u)    ((void)(u),free(x))
+static openwm_context_t* global_temp_stbtt_ctx;
+
+#define STBTT_malloc(x,u)  ((void)(u),global_temp_stbtt_ctx->allocate(x))
+#define STBTT_free(x,u)    ((void)(u),global_temp_stbtt_ctx->deallocate(x))
 
 #define STB_TRUETYPE_IMPLEMENTATION
 #include <stb/stb_truetype.h>
 
-openwm_font_t* openwm_create_font(struct openwm_context* ctx, const char* name, int line_height, void* filedata)
+void openwm_font_bake_bitmaps(openwm_context_t* ctx, openwm_font_t* font)
 {
+    if (ctx == NULL || font == NULL)
+        return;
+
+    for (int i = 32; i < 126; i++)
+    {
+        if (stbtt_FindGlyphIndex(&font->info, i) == 0)
+            continue;
+
+        int advance, lsb;
+        int x0, y0, x1, y1;
+        stbtt_GetCodepointHMetrics(&font->info, i, &advance, &lsb);
+        stbtt_GetCodepointBitmapBox(&font->info, i, font->scale, font->scale, &x0, &y0, &x1, &y1);
+        int width = x1 - x0;
+        int height = y1 - y0;
+
+        uint8_t* bitmap = (uint8_t*)ctx->allocate(width * height);
+        for(int px = 0; px < width * height; px++)
+            bitmap[px]=0;
+        stbtt_MakeCodepointBitmap(&font->info, bitmap, width, height, width, font->scale, font->scale, i);
+
+        if (font->glyphcache[i] != NULL)
+            ctx->deallocate(font->glyphcache[i]);
+        font->glyphcache[i] = bitmap;
+        font->glyph_sizes[i] = OPENWM_POINT2I(width,height);
+        font->glyph_positions[i] = OPENWM_POINT2I(x0,y0);
+    }
+}
+
+openwm_font_t* openwm_create_font(openwm_context_t* ctx, const char* name, int line_height, void* filedata)
+{
+    global_temp_stbtt_ctx = ctx;
+
     if (ctx == NULL || name == NULL || filedata == NULL)
         return NULL;
 
@@ -30,15 +67,12 @@ openwm_font_t* openwm_create_font(struct openwm_context* ctx, const char* name, 
     font->descent = 0;
     font->line_spacing = 0;
     font->color = OPENWM_COLOR_RGBA(0xFF, 0xFF, 0xFF, 0xFF);
-    font->cursor = (openwm_point2i){
-        .x = 0,
-        .y = 0,
-    };
+    font->cursor = OPENWM_POINT2I(0,0);
     font->scale = stbtt_ScaleForPixelHeight(&font->info, line_height);
     stbtt_GetFontVMetrics(&font->info, &font->ascent, &font->descent, &font->line_spacing);
     font->glyphcache = ctx->allocate(font->info.numGlyphs * sizeof(uint8_t*));
-    font->glyph_positions = ctx->allocate(font->info.numGlyphs * sizeof(openwm_point2i));
-    font->glyph_sizes = ctx->allocate(font->info.numGlyphs * sizeof(openwm_point2i));
+    font->glyph_positions = ctx->allocate(font->info.numGlyphs * sizeof(openwm_point2i_t));
+    font->glyph_sizes = ctx->allocate(font->info.numGlyphs * sizeof(openwm_point2i_t));
 
     if (font->glyphcache == NULL || font->glyph_positions == NULL || font->glyph_sizes == NULL)
     {
@@ -49,58 +83,28 @@ openwm_font_t* openwm_create_font(struct openwm_context* ctx, const char* name, 
     for (int i = 0; i < font->info.numGlyphs; i++)
     {
         font->glyphcache[i] = NULL;
-        font->glyph_sizes[i] = (openwm_point2i){
-            .x=0,
-            .y=0,
-        };
-        font->glyph_positions[i] = (openwm_point2i){
-            .x=0,
-            .y=0,
-        };
+        font->glyph_sizes[i] = OPENWM_POINT2I(0,0);
+        font->glyph_positions[i] = OPENWM_POINT2I(0,0);
     }
-
-    for (int i = 0; i < font->info.numGlyphs; i++)
-    {
-        int idx = stbtt_FindGlyphIndex(&font->info, i);
-        if (idx == 0)
-            continue;
-
-        int advance, lsb;
-        stbtt_GetGlyphHMetrics(&font->info, idx, &advance, &lsb);
-
-        int x0, y0, x1, y1;
-        stbtt_GetGlyphBitmapBox(&font->info, idx, font->scale, font->scale, &x0, &y0, &x1, &y1);
-
-        int width = x1 - x0;
-        int height = y1 - y0;
-
-        unsigned char* bitmap = (unsigned char*)ctx->allocate(width * height);
-        stbtt_MakeGlyphBitmap(&font->info, bitmap, font->scale, font->scale, 0, width, height, idx);
-
-        font->glyphcache[i] = bitmap;
-        font->glyph_sizes[i] = (openwm_point2i){
-            .x=width,
-            .y=height,
-        };
-
-        font->glyph_positions[i] = (openwm_point2i){
-            .x=x0,
-            .y=y0,
-        };
-    }
+    openwm_font_bake_bitmaps(ctx, font);
 
     return font;
 }
 
-void openwm_font_set_line_height(openwm_font_t* font, int line_height)
+void openwm_font_set_line_height(openwm_context_t* ctx, openwm_font_t* font, int line_height)
 {
     if (font == NULL)
         return;
 
+    if (font->line_height == line_height)
+        return;
+
+    font->line_height = line_height;
     font->scale = stbtt_ScaleForPixelHeight(&font->info, line_height);
+    openwm_font_bake_bitmaps(ctx, font);
 }
 
-void openwm_font_draw_char(struct openwm_context* ctx, openwm_font_t* font, const char chr, int style)
+void openwm_font_draw_char(openwm_context_t* ctx, openwm_font_t* font, const char chr, int style)
 {
     if (ctx == NULL || font == NULL)
         return;
@@ -147,7 +151,7 @@ void openwm_font_draw_char(struct openwm_context* ctx, openwm_font_t* font, cons
     }
 }
 
-void openwm_font_draw_text(struct openwm_context* ctx, openwm_font_t* font, const char* text, int style)
+void openwm_font_draw_text(openwm_context_t* ctx, openwm_font_t* font, const char* text, int style)
 {
     if (ctx == NULL || font == NULL || text == NULL)
         return;
@@ -175,7 +179,7 @@ void openwm_font_draw_text(struct openwm_context* ctx, openwm_font_t* font, cons
     }
 }
 
-void openwm_dispose_font(struct openwm_context* ctx, openwm_font_t* font)
+void openwm_dispose_font(openwm_context_t* ctx, openwm_font_t* font)
 {
     if (ctx == NULL || font == NULL)
         return;

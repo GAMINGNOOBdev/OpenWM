@@ -1,19 +1,18 @@
-#include "openwm/drawable.h"
-#include "openwm/fonts/font.h"
+#include <openwm/fonts/font.h>
+#include <openwm/drawable.h>
 #include "openwm/types.h"
 #include <openwm/context.h>
 #include <openwm/window.h>
-#include <openwm/fonts/fonts.h>
 
-void openwm_window_draw(struct openwm_context* ctx, struct openwm_drawable* drawable)
+void openwm_window_draw(openwm_context_t* ctx, openwm_drawable_t* drawable)
 {
-    openwm_window* window = (openwm_window*)drawable;
+    openwm_window_t* window = (openwm_window_t*)drawable;
 
     if (window == NULL)
         return;
 
-    openwm_point2i pos = window->drawable.pos;
-    openwm_point2i size = window->drawable.size;
+    openwm_point2i_t pos = window->drawable.pos;
+    openwm_point2i_t size = window->drawable.size;
 
     // draw border
     ctx->set_rect(pos, size, WINDOW_BORDER_WIDTH, COLOR_BORDER_BAR);
@@ -34,7 +33,7 @@ void openwm_window_draw(struct openwm_context* ctx, struct openwm_drawable* draw
         font->cursor.x = pos.x;
         font->cursor.y = pos.y;
         font->color = COLOR_TEXT;
-        openwm_font_set_line_height(font, WINDOW_TITLEBAR_HEIGHT-2);
+        openwm_font_set_line_height(ctx, font, WINDOW_TITLEBAR_HEIGHT-2);
         openwm_font_draw_text(ctx, font, window->title, 0);
     }
 
@@ -47,21 +46,21 @@ void openwm_window_draw(struct openwm_context* ctx, struct openwm_drawable* draw
     ctx->set_area(pos, size, COLOR_CONTENTS);
 
     // draw contents
-    for (openwm_drawable* drawable = window->drawable.children_start; drawable != NULL; drawable = drawable->next)
+    for (openwm_drawable_t* drawable = window->drawable.children_start; drawable != NULL; drawable = drawable->next)
         if (drawable->enabled && drawable->draw != NULL)
             drawable->draw(ctx, drawable);
 }
 
-openwm_window* openwm_create_window(struct openwm_context* ctx, const char* title, openwm_point2i pos, openwm_point2i size)
+openwm_window_t* openwm_create_window(openwm_context_t* ctx, const char* title, openwm_point2i_t pos, openwm_point2i_t size)
 {
     if (ctx == NULL || title == NULL)
         return NULL;
 
-    openwm_window* window = ctx->allocate(sizeof(openwm_window));
+    openwm_window_t* window = ctx->allocate(sizeof(openwm_window_t));
     if (window == NULL)
         return NULL;
 
-    window->drawable = (openwm_drawable){
+    window->drawable = (openwm_drawable_t){
         .pos = pos,
         .size = size,
         .draw = openwm_window_draw,
@@ -74,12 +73,12 @@ openwm_window* openwm_create_window(struct openwm_context* ctx, const char* titl
     };
     window->title = (char*)title;
 
-    openwm_context_add_drawable(ctx, (openwm_drawable*)window);
+    openwm_context_add_drawable(ctx, (openwm_drawable_t*)window);
 
     return window;
 }
 
-void openwm_window_add_child(openwm_window* window, openwm_drawable* child)
+void openwm_window_add_child(openwm_window_t* window, openwm_drawable_t* child)
 {
     if (window == NULL || child == NULL)
         return;
@@ -95,16 +94,16 @@ void openwm_window_add_child(openwm_window* window, openwm_drawable* child)
     window->drawable.children_end = child;
 }
 
-void openwm_dispose_window(struct openwm_context* ctx, openwm_window* window)
+void openwm_dispose_window(openwm_context_t* ctx, openwm_window_t* window)
 {
     if (window == NULL)
         return;
 
-    openwm_context_remove_drawable(ctx, (openwm_drawable*)window);
+    openwm_context_remove_drawable(ctx, (openwm_drawable_t*)window);
 
     if (window->drawable.children_start != NULL)
     {
-        for (openwm_drawable* child = window->drawable.children_start; child != NULL; child = child->next)
+        for (openwm_drawable_t* child = window->drawable.children_start; child != NULL; child = child->next)
             openwm_dispose_drawable(ctx, child);
     }
 
