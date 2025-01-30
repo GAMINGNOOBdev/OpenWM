@@ -54,31 +54,24 @@ int openwm_send_event(openwm_event_queue_t* queue, openwm_event_t event)
 
 void openwm_handle_event(openwm_drawable_t* drawable, openwm_event_t event)
 {
+    if (drawable == NULL)
+        return;
+
     if ((event.type == EVENT_TYPE_GENERAL || event.type == EVENT_TYPE_WINDOW) && drawable->on_event_handle != NULL)
-    {
         drawable->on_event_handle(drawable, event);
-    }
     else if (event.type == EVENT_TYPE_MOUSE && drawable->on_mouse_move != NULL)
-    {
         drawable->on_mouse_move(drawable, event);
-    }
     else if (event.type == EVENT_TYPE_SCROLL && drawable->on_mouse_scroll != NULL)
-    {
         drawable->on_mouse_scroll(drawable, event);
-    }
     else if (event.type == EVENT_TYPE_BUTTON && drawable->on_mouse_button != NULL)
-    {
         drawable->on_mouse_button(drawable, event);
-    }
     else if (event.type == EVENT_TYPE_KEY && drawable->on_key_press != NULL)
-    {
         drawable->on_key_press(drawable, event);
-    }
 }
 
 openwm_drawable_t* openwm_find_drawable(openwm_context_t* ctx)
 {
-    openwm_drawable_t* drawable = NULL;
+    openwm_drawable_t* drawable = ctx->drawlist_start;
     for (openwm_drawable_t* entry = ctx->drawlist_start; entry != NULL; entry = entry->next)
     {
         // add some sort of focus system

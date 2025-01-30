@@ -1,6 +1,7 @@
 #include "openwm/drawable.h"
 #include "openwm/event/events.h"
 #include "openwm/fonts/font.h"
+#include "openwm/types.h"
 #include <openwm/context.h>
 
 void openwm_draw(openwm_context_t* ctx)
@@ -10,6 +11,11 @@ void openwm_draw(openwm_context_t* ctx)
 
     if (ctx->drawlist_start == NULL)
         return;
+
+    openwm_handle_events(ctx);
+
+    // clear screen
+    ctx->set_area(OPENWM_POINT2I(0, 0), ctx->framebuffer_size, OPENWM_COLOR_RGBA(0, 0, 0, 1));
 
     for (openwm_drawable_t* drawable = ctx->drawlist_start; drawable != NULL; drawable = drawable->next)
         if (drawable->enabled && drawable->draw != NULL)
@@ -39,7 +45,6 @@ openwm_context_t* openwm_create_context(openwm_point2i_t size, uint64_t* fb_addr
         .deallocate = dealloc,
     };
     ctx->event_queue = openwm_create_event_queue(ctx);
-    // init_ssfn(ctx->framebuffer_address, ctx->framebuffer_size.x, ctx->framebuffer_size.y, ctx->framebuffer_pitch, 1, ctx->font_address);
     return ctx;
 }
 

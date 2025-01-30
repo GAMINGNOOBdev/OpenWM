@@ -21,6 +21,12 @@ typedef uint16_t event_type_t;
 
 #define EVENT_QUEUE_BUFFER  0x100
 
+#define OPENWM_WINDOW_EVENT(movex, movey, button, buttonstate) (openwm_event_t){.type=EVENT_TYPE_WINDOW,.relative_movement=OPENWM_POINT2I(movex,movey),.mouse_button_state=buttonstate,.mouse_button=button}
+#define OPENWM_MOUSE_EVENT(movex, movey) (openwm_event_t){.type=EVENT_TYPE_MOUSE,.relative_movement=OPENWM_POINT2I(movex,movey)}
+#define OPENWM_SCROLL_EVENT(scroll) (openwm_event_t){.type=EVENT_TYPE_SCROLL,.scroll=scroll}
+#define OPENWM_BUTTON_EVENT(buttonstate, button) (openwm_event_t){.type=EVENT_TYPE_BUTTON,.mouse_button_state=buttonstate,.mouse_button=button}
+#define OPENWM_KEY_EVENT(keystate, keyb) (openwm_event_t){.type=EVENT_TYPE_KEY,.key_state=keystate,.key=keyb}
+
 typedef struct
 {
     event_type_t type;

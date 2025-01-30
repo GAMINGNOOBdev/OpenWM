@@ -51,6 +51,17 @@ void openwm_window_draw(openwm_context_t* ctx, openwm_drawable_t* drawable)
             drawable->draw(ctx, drawable);
 }
 
+void openwm_window_move(openwm_drawable_t* drawable, openwm_event_t event)
+{
+    openwm_window_t* window = (openwm_window_t*)drawable;
+
+    if (window == NULL)
+        return;
+
+    window->drawable.pos.x += event.relative_movement.x;
+    window->drawable.pos.y += event.relative_movement.y;
+}
+
 openwm_window_t* openwm_create_window(openwm_context_t* ctx, const char* title, openwm_point2i_t pos, openwm_point2i_t size)
 {
     if (ctx == NULL || title == NULL)
@@ -68,6 +79,11 @@ openwm_window_t* openwm_create_window(openwm_context_t* ctx, const char* title, 
         .custom_data = NULL,
         .children_start = NULL,
         .children_end = NULL,
+        .on_event_handle = NULL,
+        .on_mouse_scroll = NULL,
+        .on_mouse_button = NULL,
+        .on_mouse_move = openwm_window_move,
+        .on_key_press = NULL,
         .prev = NULL,
         .next = NULL,
     };
