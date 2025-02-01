@@ -6,6 +6,7 @@
 typedef struct openwm_style_t
 {
     openwm_color_t border;
+    openwm_color_t border_unfocussed;
     openwm_color_t title_bar;
     openwm_color_t title_text;
     openwm_color_t contents;

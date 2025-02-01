@@ -106,16 +106,6 @@ void openwm_handle_event_locally(openwm_context_t* ctx, openwm_event_t* event)
     event->mouse_position.y = input_data->mouse_position.y;
 }
 
-openwm_drawable_t* openwm_find_drawable(openwm_context_t* ctx)
-{
-    openwm_drawable_t* drawable = ctx->drawlist_start;
-    for (openwm_drawable_t* entry = ctx->drawlist_start; entry != NULL; entry = entry->next)
-    {
-        /// TODO: add some sort of focus system
-    }
-    return drawable;
-}
-
 void openwm_handle_events(openwm_context_t* ctx)
 {
     if (ctx == NULL)
@@ -126,11 +116,13 @@ void openwm_handle_events(openwm_context_t* ctx)
         return;
 
 
-    for (size_t i = 0; i < ctx->event_queue->count; i++)
+    for (openwm_drawable_t* entry = ctx->drawlist_start; entry != NULL; entry = entry->next)
     {
-        openwm_handle_event_locally(ctx, &ctx->event_queue->events[i]);
-        openwm_drawable_t* drawable = openwm_find_drawable(ctx);
-        openwm_handle_event(drawable, ctx->event_queue->events[i]);
+        for (size_t i = 0; i < ctx->event_queue->count; i++)
+        {
+            openwm_handle_event_locally(ctx, &ctx->event_queue->events[i]);
+            openwm_handle_event(entry, ctx->event_queue->events[i]);
+        }
     }
     ctx->event_queue->count=0;
 }

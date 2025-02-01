@@ -127,10 +127,6 @@ void openwm_font_draw_char(openwm_context_t* ctx, openwm_font_t* font, const cha
     int y = font->cursor.y + font->glyph_positions[idx].y;
     uint8_t* bitmap = font->glyphcache[idx];
 
-    float x_shear = 0.0f;
-    if (style & OPENWM_FONT_STYLE_ITALIC)
-        x_shear = -0.3f; ///TODO: actually use this thing
-
     int bold_offset = 0;
     if (style & OPENWM_FONT_STYLE_BOLD)
         bold_offset = 2;

@@ -7,7 +7,7 @@
 
 #define OPENWM_FONT_STYLE_NORMAL    0b000
 #define OPENWM_FONT_STYLE_BOLD      0b001
-#define OPENWM_FONT_STYLE_ITALIC    0b010
+#define OPENWM_FONT_STYLE_ITALIC    0b010 // doesn't do anything at the moment
 #define OPENWM_FONT_STYLE_UNDERLINE 0b100
 
 typedef struct openwm_font_t

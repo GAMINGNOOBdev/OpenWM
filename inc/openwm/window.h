@@ -14,6 +14,7 @@ typedef struct openwm_window_t
 struct openwm_context_t;
 
 openwm_window_t* openwm_create_window(struct openwm_context_t* ctx, const char* title, openwm_point2i_t pos, openwm_point2i_t size);
+void openwm_window_set_focus(struct openwm_context_t* ctx, openwm_window_t* window, uint8_t focus);
 void openwm_window_add_child(openwm_window_t* window, openwm_drawable_t* child);
 void openwm_dispose_window(struct openwm_context_t* ctx, openwm_window_t* window);
 

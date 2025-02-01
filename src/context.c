@@ -23,8 +23,10 @@ void openwm_draw(openwm_context_t* ctx)
         ctx->clear_screen(OPENWM_COLOR_RGBA(0, 0, 0, 1));
 
     for (openwm_drawable_t* drawable = ctx->drawlist_start; drawable != NULL; drawable = drawable->next)
-        if (drawable->enabled && drawable->draw != NULL)
+    {
+        if (drawable->draw != NULL && !drawable->hidden)
             drawable->draw(drawable);
+    }
 }
 
 openwm_context_t* openwm_create_context(openwm_point2i_t size, allocate_t alloc, reallocate_t realloc, deallocate_t dealloc)
@@ -45,6 +47,7 @@ openwm_context_t* openwm_create_context(openwm_point2i_t size, allocate_t alloc,
         },
         .style = {
             .border = OPENWM_COLOR_RGB(0x88,0x22,0x88),
+            .border_unfocussed = OPENWM_COLOR_RGB(0x44,0x22,0x44),
             .border_width = 2,
             .title_bar = OPENWM_COLOR_RGB(0x22,0x22,0x22),
             .title_bar_height = 20,
@@ -56,6 +59,7 @@ openwm_context_t* openwm_create_context(openwm_point2i_t size, allocate_t alloc,
         },
         .drawlist_start = NULL,
         .drawlist_end = NULL,
+        .drawlist_size = 0,
         .draw = openwm_draw,
         .event_queue = NULL,
         .clear_screen = 0,
@@ -169,6 +173,9 @@ void openwm_context_add_drawable(openwm_context_t* context, openwm_drawable_t* d
     if (context == NULL || drawable == NULL)
         return;
 
+    drawable->draw_index = context->drawlist_size;
+    context->drawlist_size++;
+
     if (context->drawlist_start == NULL)
     {
         context->drawlist_start = context->drawlist_end = drawable;
@@ -193,6 +200,8 @@ openwm_drawable_t* openwm_context_remove_drawable(openwm_context_t* context, ope
         if (entry != drawable)
             continue;
 
+        context->drawlist_size--;
+
         if (entry->prev)
             entry->prev->next = entry->next;
         if (entry->next)
@@ -200,6 +209,10 @@ openwm_drawable_t* openwm_context_remove_drawable(openwm_context_t* context, ope
 
         if (entry == context->drawlist_start)
             context->drawlist_start = context->drawlist_end = NULL;
+
+        entry->draw_index = -1;
+        for (openwm_drawable_t* sentry = entry->next; sentry != NULL; sentry = sentry->next)
+            entry->draw_index--;
 
         return entry;
     }

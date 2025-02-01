@@ -46,6 +46,7 @@ typedef struct openwm_context_t
 
     openwm_drawable_t* drawlist_start;
     openwm_drawable_t* drawlist_end;
+    size_t drawlist_size;
     openwm_font_t* fontlist_start;
     openwm_font_t* fontlist_end;
     openwm_event_queue_t* event_queue;

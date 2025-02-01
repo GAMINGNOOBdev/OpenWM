@@ -15,7 +15,11 @@ openwm_drawable_t* openwm_create_drawable(openwm_context_t* ctx, openwm_point2i_
         .size = size,
         .draw = draw,
         .enabled = 1,
+        .focussed = 0,
+        .hidden = 0,
+        .reserved = 0,
         .custom_data = custom_data,
+        .draw_index = -1,
         .children_start = NULL,
         .children_end = NULL,
         .on_event_handle = NULL,
@@ -29,6 +33,51 @@ openwm_drawable_t* openwm_create_drawable(openwm_context_t* ctx, openwm_point2i_
     };
 
     return drawable;
+}
+
+uint8_t openwm_drawable_overlapping(openwm_drawable_t* drawable1, openwm_drawable_t* drawable2)
+{
+    openwm_point2i_t pos1 = drawable1->pos;
+    openwm_point2i_t size1 = drawable1->size;
+    openwm_point2i_t pos2 = drawable2->pos;
+    openwm_point2i_t size2 = drawable2->size;
+
+    if (pos1.x < pos2.x + size2.x &&
+        pos1.x + size1.x > pos2.x &&
+        pos1.y < pos2.y + size2.y &&
+        pos1.y + size1.y > pos2.y)
+    {
+        return 1;
+    }
+    return 0;
+}
+
+uint8_t openwm_drawable_is_visible(openwm_context_t* ctx, openwm_drawable_t* drawable)
+{
+    openwm_point2i_t pos = drawable->pos;
+    openwm_point2i_t size = drawable->size;
+
+    for (openwm_drawable_t* other = ctx->drawlist_start; other != NULL; other = other->next)
+    {
+        if (other->draw_index > drawable->draw_index && !other->hidden)
+        {
+            openwm_point2i_t other_pos = other->pos;
+            openwm_point2i_t other_size = other->size;
+
+            if (openwm_drawable_overlapping(other, drawable))
+            {
+                if (other_pos.x <= pos.x &&
+                    other_pos.x + other_size.x >= pos.x + size.x &&
+                    other_pos.y <= pos.y &&
+                    other_pos.y + other_size.y >= pos.y + size.y)
+                {
+                    return 0;
+                }
+            }
+        }
+    }
+
+    return 1;
 }
 
 void openwm_drawable_add_child(openwm_drawable_t* drawable, openwm_drawable_t* child)
