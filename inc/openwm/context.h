@@ -2,8 +2,10 @@
 #define __OPENWM__CONTEXT_H_ 1
 
 #include "event/events.h"
+#include "input/input.h"
 #include "fonts/font.h"
 #include "drawable.h"
+#include "style.h"
 #include "types.h"
 #include <stddef.h>
 
@@ -11,19 +13,36 @@
 struct openwm_context_t;
 
 typedef void(*set_area_t)(openwm_point2i_t pos, openwm_point2i_t size, openwm_color_t col);
-typedef void(*set_rect_t)(openwm_point2i_t pos, openwm_point2i_t size, uint8_t width, openwm_color_t col);
+typedef void(*set_rect_t)(openwm_point2i_t pos, openwm_point2i_t size, uint16_t width, openwm_color_t col);
 typedef void(*set_pixel_t)(openwm_point2i_t pos, openwm_color_t col);
+typedef void(*clear_screen_t)(openwm_color_t col);
 typedef void*(*allocate_t)(size_t size);
 typedef void*(*reallocate_t)(void* ptr, size_t size);
 typedef void(*deallocate_t)(void* ptr);
+typedef double(*ceil_t)(double x);
+typedef double(*fmod_t)(double x, double y);
+typedef double(*acos_t)(double x);
+typedef double(*cos_t)(double x);
+typedef double(*pow_t)(double x, double y);
+typedef double(*sqrt_t)(double x);
+typedef double(*floor_t)(double x);
 typedef void(*draw_t)(struct openwm_context_t* ctx);
+
+typedef struct openwm_api_callbacks_t
+{
+    ceil_t ceil;
+    fmod_t fmod;
+    acos_t acos;
+    cos_t cos;
+    pow_t pow;
+    sqrt_t sqrt;
+    floor_t floor;
+} openwm_api_callbacks_t;
 
 typedef struct openwm_context_t
 {
     openwm_point2i_t framebuffer_size;
-    uint64_t* framebuffer_address;
-    uint64_t* font_address;
-    size_t framebuffer_pitch;
+    openwm_style_t style;
 
     openwm_drawable_t* drawlist_start;
     openwm_drawable_t* drawlist_end;
@@ -31,6 +50,7 @@ typedef struct openwm_context_t
     openwm_font_t* fontlist_end;
     openwm_event_queue_t* event_queue;
 
+    clear_screen_t clear_screen;
     set_pixel_t set_pixel;
     set_area_t set_area;
     set_rect_t set_rect;
@@ -39,9 +59,11 @@ typedef struct openwm_context_t
     allocate_t allocate;
     reallocate_t reallocate;
     deallocate_t deallocate;
+    openwm_api_callbacks_t api_callbacks;
+    openwm_input_data_t input_data;
 } openwm_context_t;
 
-openwm_context_t* openwm_create_context(openwm_point2i_t fb_size, uint64_t* fb_addr, uint64_t* font_addr, size_t fb_pitch, allocate_t alloc, reallocate_t realloc, deallocate_t dealloc);
+openwm_context_t* openwm_create_context(openwm_point2i_t fb_size, allocate_t alloc, reallocate_t realloc, deallocate_t dealloc);
 
 void openwm_context_add_font(openwm_context_t* context, const char* name, int line_height, void* filedata);
 
@@ -55,7 +77,9 @@ void openwm_context_add_drawable(openwm_context_t* context, openwm_drawable_t* d
 // returned object needs to be disposed manually
 openwm_drawable_t* openwm_context_remove_drawable(openwm_context_t* context, openwm_drawable_t* drawable);
 
-void openwm_context_set_callbacks(openwm_context_t* context, set_pixel_t px, set_area_t area, set_rect_t rect);
+void openwm_context_set_callbacks(openwm_context_t* context, set_pixel_t px, set_area_t area, set_rect_t rect, clear_screen_t clear);
+
+void openwm_context_set_api_callbacks(openwm_context_t* context, openwm_api_callbacks_t cb);
 
 void openwm_dispose_context(openwm_context_t* context);
 

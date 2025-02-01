@@ -6,10 +6,20 @@
 #include <stdarg.h>
 #include <stdio.h>
 
-static openwm_context_t* global_temp_stbtt_ctx;
+extern openwm_context_t* global_context;
 
-#define STBTT_malloc(x,u)  ((void)(u),global_temp_stbtt_ctx->allocate(x))
-#define STBTT_free(x,u)    ((void)(u),global_temp_stbtt_ctx->deallocate(x))
+#define STBTT_malloc(x,u)   ((void)(u),global_context->allocate(x))
+#define STBTT_free(x,u)     ((void)(u),global_context->deallocate(x))
+#define STBTT_ifloor(x)     ((int)global_context->api_callbacks.floor(x))
+#define STBTT_iceil(x)      ((int)global_context->api_callbacks.ceil(x))
+#define STBTT_sqrt(x)       global_context->api_callbacks.sqrt(x)
+#define STBTT_pow(x,y)      global_context->api_callbacks.pow(x,y)
+#define STBTT_fmod(x,y)     global_context->api_callbacks.fmod(x,y)
+#define STBTT_cos(x)        global_context->api_callbacks.cos(x)
+#define STBTT_acos(x)       global_context->api_callbacks.acos(x)
+//#define STBTT_fabs(x)       global_context->api_callbacks.fabs(x)     //////////////////////////////////////////////
+//#define STBTT_assert(x)     global_context->api_callbacks.assert(x)   ///  No idea if these are currently needed ///
+//#define STBTT_strlen(x)     global_context->api_callbacks.strlen(x)   //////////////////////////////////////////////
 
 #define STB_TRUETYPE_IMPLEMENTATION
 #include <stb/stb_truetype.h>
@@ -46,8 +56,6 @@ void openwm_font_bake_bitmaps(openwm_context_t* ctx, openwm_font_t* font)
 
 openwm_font_t* openwm_create_font(openwm_context_t* ctx, const char* name, int line_height, void* filedata)
 {
-    global_temp_stbtt_ctx = ctx;
-
     if (ctx == NULL || name == NULL || filedata == NULL)
         return NULL;
 

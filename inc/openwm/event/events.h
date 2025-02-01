@@ -8,24 +8,18 @@
 
 typedef uint16_t event_type_t;
 
-#define EVENT_TYPE_GENERAL  (0)
-#define EVENT_TYPE_WINDOW   (1)
-#define EVENT_TYPE_MOUSE    (2)
-#define EVENT_TYPE_SCROLL   (3)
-#define EVENT_TYPE_BUTTON   (4)
-#define EVENT_TYPE_KEY      (5)
+#define OPENWM_EVENT_TYPE_GENERAL  (0)
+#define OPENWM_EVENT_TYPE_MOUSE    (1)
+#define OPENWM_EVENT_TYPE_SCROLL   (2)
+#define OPENWM_EVENT_TYPE_BUTTON   (3)
+#define OPENWM_EVENT_TYPE_KEY      (4)
 
-#define WINDOW_MAXIMISE     (0)
-#define WINDOW_MINIMISE     (1)
-#define WINDOW_RESIZE       (1)
+#define OPENWM_EVENT_QUEUE_BUFFER  0x100
 
-#define EVENT_QUEUE_BUFFER  0x100
-
-#define OPENWM_WINDOW_EVENT(movex, movey, button, buttonstate) (openwm_event_t){.type=EVENT_TYPE_WINDOW,.relative_movement=OPENWM_POINT2I(movex,movey),.mouse_button_state=buttonstate,.mouse_button=button}
-#define OPENWM_MOUSE_EVENT(movex, movey) (openwm_event_t){.type=EVENT_TYPE_MOUSE,.relative_movement=OPENWM_POINT2I(movex,movey)}
-#define OPENWM_SCROLL_EVENT(scroll) (openwm_event_t){.type=EVENT_TYPE_SCROLL,.scroll=scroll}
-#define OPENWM_BUTTON_EVENT(buttonstate, button) (openwm_event_t){.type=EVENT_TYPE_BUTTON,.mouse_button_state=buttonstate,.mouse_button=button}
-#define OPENWM_KEY_EVENT(keystate, keyb) (openwm_event_t){.type=EVENT_TYPE_KEY,.key_state=keystate,.key=keyb}
+#define OPENWM_MOUSE_EVENT(movex, movey) (openwm_event_t){.type=OPENWM_EVENT_TYPE_MOUSE,.relative_movement=OPENWM_POINT2I(movex,movey)}
+#define OPENWM_SCROLL_EVENT(scroll) (openwm_event_t){.type=OPENWM_EVENT_TYPE_SCROLL,.scroll=scroll}
+#define OPENWM_BUTTON_EVENT(buttonstate, button) (openwm_event_t){.type=OPENWM_EVENT_TYPE_BUTTON,.mouse_button_state=buttonstate,.mouse_button=button}
+#define OPENWM_KEY_EVENT(keystate, keyb) (openwm_event_t){.type=OPENWM_EVENT_TYPE_KEY,.key_state=keystate,.key=keyb}
 
 typedef struct
 {

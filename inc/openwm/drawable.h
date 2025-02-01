@@ -7,7 +7,7 @@
 struct openwm_context_t;
 struct openwm_drawable_t;
 
-typedef void(*openwm_drawable_draw_t)(struct openwm_context_t* ctx, struct openwm_drawable_t* drawable);
+typedef void(*openwm_drawable_draw_t)(struct openwm_drawable_t* drawable);
 typedef void (*openwm_on_event_handle_t)(struct openwm_drawable_t *self, openwm_event_t event);
 typedef void (*openwm_on_mouse_scroll_t)(struct openwm_drawable_t *self, openwm_event_t event);
 typedef void (*openwm_on_mouse_button_t)(struct openwm_drawable_t *self, openwm_event_t event);
@@ -30,6 +30,7 @@ typedef struct openwm_drawable_t
     openwm_on_mouse_move_t on_mouse_move;
     openwm_on_key_press_t on_key_press;
     
+    struct openwm_context_t* ctx;
     struct openwm_drawable_t *prev;
     struct openwm_drawable_t *next;
 } openwm_drawable_t;

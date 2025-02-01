@@ -3,7 +3,7 @@ SRC_DIR := src
 INC_DIR := inc
 OBJ_DIR := obj
 
-TARGET := $(BIN_DIR)/libFrostedWM.so
+TARGET := $(BIN_DIR)/libOpenWM.so
 
 CFLAGS := \
 	-I$(INC_DIR) -fPIC -g

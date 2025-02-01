@@ -1,8 +1,12 @@
-#include "openwm/drawable.h"
-#include "openwm/event/events.h"
-#include "openwm/fonts/font.h"
-#include "openwm/types.h"
+#include "openwm/input/input.h"
+#include <openwm/drawable.h>
+#include <openwm/event/events.h>
+#include <openwm/fonts/font.h>
+#include <openwm/types.h>
 #include <openwm/context.h>
+#include <string.h>
+
+openwm_context_t* global_context = NULL;
 
 void openwm_draw(openwm_context_t* ctx)
 {
@@ -15,35 +19,63 @@ void openwm_draw(openwm_context_t* ctx)
     openwm_handle_events(ctx);
 
     // clear screen
-    ctx->set_area(OPENWM_POINT2I(0, 0), ctx->framebuffer_size, OPENWM_COLOR_RGBA(0, 0, 0, 1));
+    if (ctx->clear_screen)
+        ctx->clear_screen(OPENWM_COLOR_RGBA(0, 0, 0, 1));
 
     for (openwm_drawable_t* drawable = ctx->drawlist_start; drawable != NULL; drawable = drawable->next)
         if (drawable->enabled && drawable->draw != NULL)
-            drawable->draw(ctx, drawable);
+            drawable->draw(drawable);
 }
 
-openwm_context_t* openwm_create_context(openwm_point2i_t size, uint64_t* fb_addr, uint64_t* font_addr, size_t fb_pitch, allocate_t alloc, reallocate_t realloc, deallocate_t dealloc)
+openwm_context_t* openwm_create_context(openwm_point2i_t size, allocate_t alloc, reallocate_t realloc, deallocate_t dealloc)
 {
+    if (global_context != NULL)
+        return global_context;
+
     openwm_context_t* ctx = alloc(sizeof(openwm_context_t));
+    if (ctx == NULL)
+        return NULL;
+
+    global_context = ctx;
+
     *ctx = (openwm_context_t){
         .framebuffer_size = {
             .x=size.x,
             .y=size.y,
         },
-        .framebuffer_pitch = fb_pitch,
-        .framebuffer_address = fb_addr,
-        .font_address = font_addr,
+        .style = {
+            .border = OPENWM_COLOR_RGB(0x88,0x22,0x88),
+            .border_width = 2,
+            .title_bar = OPENWM_COLOR_RGB(0x22,0x22,0x22),
+            .title_bar_height = 20,
+            .contents = OPENWM_COLOR_RGB(0x11,0x11,0x11),
+            .text = OPENWM_COLOR_WHITE,
+            .text_height = 12,
+            .title_text = OPENWM_COLOR_WHITE,
+            .title_text_height = 14
+        },
         .drawlist_start = NULL,
         .drawlist_end = NULL,
         .draw = openwm_draw,
         .event_queue = NULL,
+        .clear_screen = 0,
         .set_pixel = 0,
         .set_area = 0,
         .set_rect = 0,
         .allocate = alloc,
         .reallocate = realloc,
         .deallocate = dealloc,
+        .api_callbacks = {
+            .ceil = 0,
+            .fmod = 0,
+            .acos = 0,
+            .cos = 0,
+            .pow = 0,
+            .sqrt = 0,
+            .floor = 0,
+        },
     };
+    memset(&ctx->input_data, 0, sizeof(openwm_input_data_t));
     ctx->event_queue = openwm_create_event_queue(ctx);
     return ctx;
 }
@@ -175,14 +207,23 @@ openwm_drawable_t* openwm_context_remove_drawable(openwm_context_t* context, ope
     return NULL;
 }
 
-void openwm_context_set_callbacks(openwm_context_t* context, set_pixel_t px, set_area_t area, set_rect_t rect)
+void openwm_context_set_callbacks(openwm_context_t* context, set_pixel_t px, set_area_t area, set_rect_t rect, clear_screen_t clear)
 {
     if (context == NULL)
         return;
 
+    context->clear_screen = clear;
     context->set_pixel = px;
     context->set_area = area;
     context->set_rect = rect;
+}
+
+void openwm_context_set_api_callbacks(openwm_context_t* context, openwm_api_callbacks_t cb)
+{
+    if (context == NULL)
+        return;
+
+    context->api_callbacks = cb;
 }
 
 void openwm_dispose_context(openwm_context_t* context)

@@ -1,6 +1,5 @@
 #include <openwm/drawable.h>
 #include <openwm/context.h>
-#include <string.h>
 
 openwm_drawable_t* openwm_create_drawable(openwm_context_t* ctx, openwm_point2i_t pos, openwm_point2i_t size, openwm_drawable_draw_t draw, void* custom_data)
 {
@@ -24,6 +23,7 @@ openwm_drawable_t* openwm_create_drawable(openwm_context_t* ctx, openwm_point2i_
         .on_mouse_button = NULL,
         .on_mouse_move = NULL,
         .on_key_press = NULL,
+        .ctx = ctx,
         .prev = NULL,
         .next = NULL,
     };
