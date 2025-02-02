@@ -1,4 +1,5 @@
 #include "openwm/input/input.h"
+#include "openwm/input/mouse.h"
 #include <openwm/drawable.h>
 #include <openwm/event/events.h>
 #include <openwm/fonts/font.h>
@@ -7,6 +8,52 @@
 #include <string.h>
 
 openwm_context_t* global_context = NULL;
+
+void openwm_draw_cursor(openwm_context_t* ctx)
+{
+    if (ctx == NULL)
+        return;
+
+    uint32_t cursor_shape[] = {
+        0b11100000000000000000000000000000,
+        0b11110000000000000000000000000000,
+        0b11011000000000000000000000000000,
+        0b11001100000000000000000000000000,
+        0b11000110000000000000000000000000,
+        0b11000011000000000000000000000000,
+        0b11000001110000000000000000000000,
+        0b11000000011000000000000000000000,
+        0b11000000001100000000000000000000,
+        0b11000000000011000000000000000000,
+        0b11000000000011000000000000000000,
+        0b11000000000000110000000000000000,
+        0b11000000000000011000000000000000,
+        0b11000000000000001100000000000000,
+        0b11111111111111111110000000000000,
+        0b00000000011110000000000000000000,
+        0b00000000001111000000000000000000,
+        0b00000000000111100000000000000000,
+        0b00000000000011110000000000000000,
+        0b00000000000001111000000000000000,
+    };
+
+    int width = 32; // Assuming 32-bit width for each row
+    int height = 20;
+
+    for (int y = 0; y < height; y++)
+    {
+        uint32_t row = cursor_shape[y];
+        for (int x = 0; x < width; x++)
+        {
+            // Check if the bit is set (1) for this pixel
+            if ((row >> (width - 1 - x)) & 1)
+            {
+                // Draw the pixel at the current position
+                ctx->set_pixel(OPENWM_POINT2I(ctx->input_data.mouse_position.x + x, ctx->input_data.mouse_position.y + y), OPENWM_COLOR_WHITE);
+            }
+        }
+    }
+}
 
 void openwm_draw(openwm_context_t* ctx)
 {
@@ -27,6 +74,9 @@ void openwm_draw(openwm_context_t* ctx)
         if (drawable->draw != NULL && !drawable->hidden)
             drawable->draw(drawable);
     }
+
+    if (ctx->input_data.cursor_state == OPENWM_MOUSE_CURSOR_VISIBLE)
+        openwm_draw_cursor(ctx);
 }
 
 openwm_context_t* openwm_create_context(openwm_point2i_t size, allocate_t alloc, reallocate_t realloc, deallocate_t dealloc)
@@ -80,6 +130,7 @@ openwm_context_t* openwm_create_context(openwm_point2i_t size, allocate_t alloc,
         },
     };
     memset(&ctx->input_data, 0, sizeof(openwm_input_data_t));
+    ctx->input_data.cursor_state = OPENWM_MOUSE_CURSOR_VISIBLE;
     ctx->event_queue = openwm_create_event_queue(ctx);
     return ctx;
 }

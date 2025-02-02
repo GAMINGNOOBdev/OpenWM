@@ -13,6 +13,14 @@ openwm_point2i_t openwm_mouse_get_position(void)
     return global_context->input_data.mouse_position;
 }
 
+void openwm_mouse_set_cursor_state(openwm_mouse_cursor_state_t cursor)
+{
+    if (global_context == NULL)
+        return;
+
+    global_context->input_data.cursor_state = cursor;
+}
+
 openwm_mouse_button_state_t openwm_mouse_get_button(openwm_mouse_button_t button)
 {
     if (global_context == NULL || button == OPENWM_MOUSE_BUTTON_NONE)

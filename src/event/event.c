@@ -1,3 +1,4 @@
+#include "openwm/types.h"
 #include <openwm/drawable.h>
 #include <openwm/input/input.h>
 #include <openwm/event/events.h>
@@ -70,6 +71,22 @@ void openwm_handle_event(openwm_drawable_t* drawable, openwm_event_t event)
         drawable->on_key_press(drawable, event);
 }
 
+openwm_point2i_t openwm_smoothen_mouse_movement(openwm_context_t* ctx, openwm_point2i_t target_pos, float smoothing_factor)
+{
+    openwm_point2i_t* current_pos = &ctx->input_data.mouse_position;
+
+    // Calculate the new position using linear interpolation
+    int new_x = (int)((1 - smoothing_factor) * current_pos->x + smoothing_factor * target_pos.x);
+    int new_y = (int)((1 - smoothing_factor) * current_pos->y + smoothing_factor * target_pos.y);
+
+    // Update the current position
+    current_pos->x = new_x;
+    current_pos->y = new_y;
+
+    // Move the cursor to the new position
+    return OPENWM_POINT2I(new_x, new_y);
+}
+
 void openwm_handle_event_locally(openwm_context_t* ctx, openwm_event_t* event)
 {
     if (ctx == NULL)
@@ -79,8 +96,13 @@ void openwm_handle_event_locally(openwm_context_t* ctx, openwm_event_t* event)
 
     if (event->type == OPENWM_EVENT_TYPE_MOUSE)
     {
-        input_data->mouse_position.x += event->relative_movement.x;
-        input_data->mouse_position.y += event->relative_movement.y;
+        openwm_point2i_t target = OPENWM_POINT2I(
+            input_data->mouse_position.x + event->relative_movement.x,
+            input_data->mouse_position.y + event->relative_movement.y
+        );
+        openwm_point2i_t smoothened = openwm_smoothen_mouse_movement(ctx, target, 0.2f);
+        input_data->mouse_position.x = smoothened.x;
+        input_data->mouse_position.y = smoothened.y;
         input_data->relative_movement.x = event->relative_movement.x;
         input_data->relative_movement.y = event->relative_movement.y;
     }

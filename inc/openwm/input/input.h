@@ -9,6 +9,7 @@ typedef struct openwm_input_data_t
 {
     openwm_key_state_t keys[OPENWM_KEY_LAST];
     openwm_mouse_button_state_t buttons[OPENWM_MOUSE_BUTTON_LAST];
+    openwm_mouse_cursor_state_t cursor_state;
     openwm_point2i_t relative_movement;
     openwm_point2i_t mouse_position;
     float mouse_scroll;

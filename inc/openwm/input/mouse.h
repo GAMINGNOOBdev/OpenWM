@@ -5,7 +5,12 @@
 #include "../types.h"
 
 typedef uint8_t openwm_mouse_button_state_t;
+typedef uint8_t openwm_mouse_cursor_state_t;
 typedef uint8_t openwm_mouse_button_t;
+
+#define OPENWM_MOUSE_CURSOR_DISABLED       (openwm_mouse_cursor_state_t)0
+#define OPENWM_MOUSE_CURSOR_HIDDEN         (openwm_mouse_cursor_state_t)1
+#define OPENWM_MOUSE_CURSOR_VISIBLE        (openwm_mouse_cursor_state_t)2
 
 #define OPENWM_MOUSE_BUTTON_STATE_NONE     (openwm_mouse_button_state_t)0
 #define OPENWM_MOUSE_BUTTON_STATE_PRESS    (openwm_mouse_button_state_t)1
@@ -34,6 +39,11 @@ typedef uint8_t openwm_mouse_button_t;
  * Get the current mouse position
 */
 openwm_point2i_t openwm_mouse_get_position(void);
+
+/**
+ * Set the current mouse cursor
+*/
+void openwm_mouse_set_cursor(openwm_mouse_cursor_state_t cursor);
 
 /**
  * Get the state of a given mouse button
